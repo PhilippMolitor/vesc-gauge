@@ -1,0 +1,10 @@
+.pio
+.vscode/*
+!.vscode/settings.json
+
+squareline/backup/
+squareline/cache/
+
+.DS_Store
+._*
+Thumbs.db

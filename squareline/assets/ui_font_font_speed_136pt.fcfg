@@ -1,0 +1,16 @@
+{
+  "codename": "font_speed_136pt",
+  "ttf_path": "/assets/Crixus Expanded Italic.ttf",
+  "bin_path": "/assets/ui_font_font_speed_136pt.bin",
+  "c_path": "/assets/ui_font_font_speed_136pt.c",
+  "cfg_path": "/assets/ui_font_font_speed_136pt.fcfg",
+  "size": 136,
+  "bpp": 2,
+  "letters": 0,
+  "ranges": [
+    "0x20-0x7f"
+  ],
+  "symbols": "",
+  "customparams": "--no-compress --no-prefilter",
+  "uploaded": false
+}
