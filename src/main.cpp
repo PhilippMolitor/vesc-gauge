@@ -1,18 +1,11 @@
+#include "settings.h"
+
 #include <Arduino.h>
 
 #include "drivers/display/display.h"
 #include "drivers/sdcard/sdcard.h"
+#include "drivers/tca9554pwr/tca9554pwr.h"
 #include "ui.h"
-
-void peripherals_init()
-{
-  Wire.begin(15, 7);
-  // Wire.begin(SDA, SCL);
-
-  // IO expander
-  TCA9554PWR_Init(0x00);
-  Set_EXIO(EXIO_PIN8, EXIO_LOW);
-}
 
 void ui_update_data()
 {
@@ -32,10 +25,13 @@ void ui_update_data()
 
 void setup()
 {
-  Serial.begin(115200);
+  analogReadResolution(ANALOG_READ_RESOLUTION);
+  Wire.begin(SDA, SCL);
 
-  peripherals_init();
-  SD_Init();
+  // IO expander
+  tca9554pwr_init(0x00);
+  // turn off buzzer
+  tca9554pwr_write(PIN_TCA9554PWR_BUZZER, LOW);
 
   display_init();
   ui_init();

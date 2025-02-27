@@ -1,230 +1,180 @@
 #include "RTC_PCF85063.h"
+#include <esp_log.h>
 
-datetime_t datetime = { 0 };
+static const char* LOG_TAG = "PCF85063";
 
-static uint8_t decToBcd(int val);
-static int bcdToDec(uint8_t val);
-
-const unsigned char MonthStr[12][4] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-
-/******************************************************************************
-function:	PCF85063 initialized
-parameter:
-
-Info:Initiate Normal Mode, RTC Run, NO reset, No correction , 24hr format, Internal load capacitane 12.5pf
-******************************************************************************/
-void PCF85063_Init()
+// BCD conversion functions
+uint8_t dec_to_bcd(uint8_t dec)
 {
-  uint8_t Value = RTC_CTRL_1_DEFAULT | RTC_CTRL_1_CAP_SEL;
-
-  i2c_write(PCF85063_ADDRESS, RTC_CTRL_1_ADDR, &Value, 1);
-  i2c_read(PCF85063_ADDRESS, RTC_CTRL_1_ADDR, &Value, 1);
-  if (Value & RTC_CTRL_1_STOP)
-    printf("PCF85063 failed to be initialized.state :%d\r\n", Value);
-  else
-    printf("PCF85063 is running,state :%d\r\n", Value);
-
-  // datetime_t Now_datetime= {0};
-  // Now_datetime.year = 2024;
-  // Now_datetime.month = 9;
-  // Now_datetime.day = 20;
-  // Now_datetime.dotw = 5;
-  // Now_datetime.hour = 9;
-  // Now_datetime.minute = 50;
-  // Now_datetime.second = 0;
-  // PCF85063_Set_All(Now_datetime);
+  return ((dec / 10) << 4) | (dec % 10);
 }
 
-void RTC_Loop(void)
+uint8_t bcd_to_dec(uint8_t bcd)
 {
-  PCF85063_Read_Time(&datetime);
+  return ((bcd >> 4) * 10) + (bcd & 0x0F);
 }
 
-/******************************************************************************
-function:	Reset PCF85063
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Reset()
+uint8_t pcf85063_init()
 {
-  uint8_t Value = RTC_CTRL_1_DEFAULT | RTC_CTRL_1_CAP_SEL | RTC_CTRL_1_SR;
-  esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_CTRL_1_ADDR, &Value, 1);
-  if (ret != ESP_OK)
-    printf("PCF85063 : Reset failure\r\n");
+  uint8_t buf = RTC_CTRL_1_DEFAULT | RTC_CTRL_1_CAP_SEL;
+  i2c_write(PCF85063_ADDRESS, RTC_CTRL_1_ADDR, &buf, 1);
+  i2c_read(PCF85063_ADDRESS, RTC_CTRL_1_ADDR, &buf, 1);
+
+  if (buf & RTC_CTRL_1_STOP) {
+    ESP_LOGE(LOG_TAG, "init failed");
+    return 1;
+  }
+
+  ESP_LOGI(LOG_TAG, "initialized", buf);
+  return 0;
 }
 
-/******************************************************************************
-function:	Set Time
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Set_Time(datetime_t time)
+uint8_t pcf85063_reset()
 {
-  uint8_t buf[3] = { decToBcd(time.second),
-    decToBcd(time.minute),
-    decToBcd(time.hour) };
-  esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_SECOND_ADDR, buf, sizeof(buf));
-  if (ret != ESP_OK)
-    printf("PCF85063 : Time setting failure\r\n");
+  uint8_t value = RTC_CTRL_1_DEFAULT | RTC_CTRL_1_CAP_SEL | RTC_CTRL_1_SR;
+  esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_CTRL_1_ADDR, &value, 1);
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "reset failed");
+    return 1;
+  }
+
+  return 0;
 }
 
-/******************************************************************************
-function:	Set Date
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Set_Date(datetime_t date)
+uint8_t pcf85063_set_date(datetime_t date)
 {
-  uint8_t buf[4] = { decToBcd(date.day),
-    decToBcd(date.dotw),
-    decToBcd(date.month),
-    decToBcd(date.year - YEAR_OFFSET) };
+  uint8_t buf[4] = { dec_to_bcd(date.day),
+    dec_to_bcd(date.dotw),
+    dec_to_bcd(date.month),
+    dec_to_bcd(date.year - YEAR_OFFSET) };
   esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_DAY_ADDR, buf, sizeof(buf));
-  if (ret != ESP_OK)
-    printf("PCF85063 : Date setting failed\r\n");
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to set date");
+    return 1;
+  }
+
+  return 0;
 }
 
-/******************************************************************************
-function:	Set Time And Date
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Set_All(datetime_t time)
+uint8_t pcf85063_set_time(datetime_t time)
 {
-  uint8_t buf[7] = { decToBcd(time.second),
-    decToBcd(time.minute),
-    decToBcd(time.hour),
-    decToBcd(time.day),
-    decToBcd(time.dotw),
-    decToBcd(time.month),
-    decToBcd(time.year - YEAR_OFFSET) };
+  uint8_t buf[3] = { dec_to_bcd(time.second),
+    dec_to_bcd(time.minute),
+    dec_to_bcd(time.hour) };
   esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_SECOND_ADDR, buf, sizeof(buf));
-  if (ret != ESP_OK)
-    printf("PCF85063 : Failed to set the date and time\r\n");
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to set time");
+    return 1;
+  }
+
+  return 0;
 }
 
-/******************************************************************************
-function:	Read Time And Date
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Read_Time(datetime_t* time)
+uint8_t pcf85063_set(datetime_t datetime)
+{
+  uint8_t buf[7] = { dec_to_bcd(datetime.second),
+    dec_to_bcd(datetime.minute),
+    dec_to_bcd(datetime.hour),
+    dec_to_bcd(datetime.day),
+    dec_to_bcd(datetime.dotw),
+    dec_to_bcd(datetime.month),
+    dec_to_bcd(datetime.year - YEAR_OFFSET) };
+  esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_SECOND_ADDR, buf, sizeof(buf));
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to set datetime");
+    return 1;
+  }
+
+  return 0;
+}
+
+uint8_t pcf85063_read(datetime_t* datetime)
 {
   uint8_t buf[7] = { 0 };
   esp_err_t ret = i2c_read(PCF85063_ADDRESS, RTC_SECOND_ADDR, buf, sizeof(buf));
-  if (ret != ESP_OK)
-    printf("PCF85063 : Time read failure\r\n");
-  else {
-    time->second = bcdToDec(buf[0] & 0x7F);
-    time->minute = bcdToDec(buf[1] & 0x7F);
-    time->hour = bcdToDec(buf[2] & 0x3F);
-    time->day = bcdToDec(buf[3] & 0x3F);
-    time->dotw = bcdToDec(buf[4] & 0x07);
-    time->month = bcdToDec(buf[5] & 0x1F);
-    time->year = bcdToDec(buf[6]) + YEAR_OFFSET;
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to read datetime");
+    return 1;
   }
+
+  datetime->second = bcd_to_dec(buf[0]);
+  datetime->minute = bcd_to_dec(buf[1]);
+  datetime->hour = bcd_to_dec(buf[2]);
+  datetime->day = bcd_to_dec(buf[3]);
+  datetime->dotw = bcd_to_dec(buf[4]);
+  datetime->month = bcd_to_dec(buf[5]);
+  datetime->year = bcd_to_dec(buf[6]) + YEAR_OFFSET;
+
+  return 0;
 }
 
-/******************************************************************************
-function:	Enable Alarm and Clear Alarm flag
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Enable_Alarm()
+uint8_t pcf85063_alarm_enable()
 {
-  uint8_t Value = RTC_CTRL_2_DEFAULT | RTC_CTRL_2_AIE;
-  Value &= ~RTC_CTRL_2_AF;
-  esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_CTRL_2_ADDR, &Value, 1);
-  if (ret != ESP_OK)
-    printf("PCF85063 : Failed to enable Alarm Flag and Clear Alarm Flag \r\n");
+  uint8_t value = RTC_CTRL_2_DEFAULT | RTC_CTRL_2_AIE;
+  value &= ~RTC_CTRL_2_AF;
+  esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_CTRL_2_ADDR, &value, 1);
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to enable alarm");
+    return 1;
+  }
+
+  return 0;
 }
 
-/******************************************************************************
-function:	Get Alarm flag
-parameter:
-Info:
-******************************************************************************/
-uint8_t PCF85063_Get_Alarm_Flag()
+uint8_t pcf85063_alarm_status(uint8_t* status)
 {
-  uint8_t Value = 0;
-  esp_err_t ret = i2c_read(PCF85063_ADDRESS, RTC_CTRL_2_ADDR, &Value, 1);
-  if (ret != ESP_OK)
-    printf("PCF85063 : Failed to obtain a warning flag.\r\n");
-  else
-    Value &= RTC_CTRL_2_AF | RTC_CTRL_2_AIE;
-  // printf("Value = 0x%x",Value);
-  return Value;
+  uint8_t value = 0;
+  esp_err_t ret = i2c_read(PCF85063_ADDRESS, RTC_CTRL_2_ADDR, &value, 1);
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to read alarm status");
+    return 1;
+  }
+
+  *status = value & (RTC_CTRL_2_AF | RTC_CTRL_2_AIE);
+  return 0;
 }
 
-/******************************************************************************
-function:	Set Alarm
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Set_Alarm(datetime_t time)
+uint8_t pcf85063_alarm_set(datetime_t time)
 {
-
   uint8_t buf[5] = {
-    decToBcd(time.second) & (~RTC_ALARM),
-    decToBcd(time.minute) & (~RTC_ALARM),
-    decToBcd(time.hour) & (~RTC_ALARM),
-    // decToBcd(time.day)&(~RTC_ALARM),
-    // decToBcd(time.dotw)&(~RTC_ALARM)
-    RTC_ALARM, // disalbe day
-    RTC_ALARM // disalbe weekday
+    dec_to_bcd(time.second) & (~RTC_ALARM),
+    dec_to_bcd(time.minute) & (~RTC_ALARM),
+    dec_to_bcd(time.hour) & (~RTC_ALARM),
+    RTC_ALARM,
+    RTC_ALARM
   };
   esp_err_t ret = i2c_write(PCF85063_ADDRESS, RTC_SECOND_ALARM, buf, sizeof(buf));
-  if (ret != ESP_OK)
-    printf("PCF85063 : Failed to set alarm flag\r\n");
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to set alarm time");
+    return 1;
+  }
+
+  return 0;
 }
 
-/******************************************************************************
-function:	Read Alarm
-parameter:
-Info:
-******************************************************************************/
-void PCF85063_Read_Alarm(datetime_t* time)
+uint8_t pcf85063_alarm_read(datetime_t* time)
 {
   uint8_t buf[5] = { 0 };
   esp_err_t ret = i2c_read(PCF85063_ADDRESS, RTC_SECOND_ALARM, buf, sizeof(buf));
-  if (ret != ESP_OK)
-    printf("PCF85063 : Failed to read the alarm sign\r\n");
-  else {
-    time->second = bcdToDec(buf[0] & 0x7F);
-    time->minute = bcdToDec(buf[1] & 0x7F);
-    time->hour = bcdToDec(buf[2] & 0x3F);
-    time->day = bcdToDec(buf[3] & 0x3F);
-    time->dotw = bcdToDec(buf[4] & 0x07);
+
+  if (ret != ESP_OK) {
+    ESP_LOGE(LOG_TAG, "failed to read alarm time");
+    return 1;
   }
-}
 
-/******************************************************************************
-function:	Convert normal decimal numbers to binary coded decimal
-parameter:
-Info:
-******************************************************************************/
-static uint8_t decToBcd(int val)
-{
-  return (uint8_t)((val / 10 * 16) + (val % 10));
-}
+  time->second = bcd_to_dec(buf[0] & (~RTC_ALARM));
+  time->minute = bcd_to_dec(buf[1] & (~RTC_ALARM));
+  time->hour = bcd_to_dec(buf[2] & (~RTC_ALARM));
+  time->day = bcd_to_dec(buf[3] & (~RTC_ALARM));
+  time->dotw = bcd_to_dec(buf[4] & (~RTC_ALARM));
 
-/******************************************************************************
-function:	Convert binary coded decimal to normal decimal numbers
-parameter:
-Info:
-******************************************************************************/
-static int bcdToDec(uint8_t val)
-{
-  return (int)((val / 16 * 10) + (val % 16));
-}
-
-/******************************************************************************
-function:
-parameter:
-Info:
-******************************************************************************/
-void datetime_to_str(char* datetime_str, datetime_t time)
-{
-  sprintf(datetime_str, " %d.%d.%d  %d %d:%d:%d ", time.year, time.month,
-      time.day, time.dotw, time.hour, time.minute, time.second);
+  return 0;
 }

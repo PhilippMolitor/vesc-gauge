@@ -7,16 +7,8 @@
 #include <FS.h>
 #include <SD_MMC.h>
 
-#include "../ioexpander/TCA9554PWR.h"
+#include "../tca9554pwr/tca9554pwr.h"
 
-#define SD_CLK_PIN 2
-#define SD_CMD_PIN 1
-#define SD_D0_PIN 42
-
-extern uint16_t SDCard_Size;
-extern uint16_t Flash_Size;
-
-void SD_Init();
-void Flash_test();
-bool File_Search(const char* directory, const char* fileName);
-uint16_t Folder_retrieval(const char* directory, const char* fileExtension, char File_Name[][100], uint16_t maxFiles);
+uint8_t sdcard_mount(size_t* size = nullptr, size_t* used = nullptr, const char* mountpoint = "/sdcard");
+void sdcard_unmount();
+bool sdcard_file_exists(const char* directory, const char* name);

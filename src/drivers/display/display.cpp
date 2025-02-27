@@ -36,14 +36,14 @@ void display_init(void)
   lv_tick_set_cb(xTaskGetTickCount);
 
   // initialize display/buffer
-  lv_display_t* display = lv_display_create(ESP_PANEL_LCD_WIDTH, ESP_PANEL_LCD_HEIGHT);
+  lv_display_t* display = lv_display_create(ST7701_WIDTH, ST7701_HEIGHT);
   lv_display_set_flush_cb(display, display_flush);
   lv_display_set_buffers(
       display,
       frame_buf_a, frame_buf_b, FB_SIZE,
       LV_DISPLAY_RENDER_MODE_PARTIAL);
-  lv_display_set_resolution(display, ESP_PANEL_LCD_WIDTH, ESP_PANEL_LCD_HEIGHT);
-  lv_display_set_physical_resolution(display, ESP_PANEL_LCD_WIDTH, ESP_PANEL_LCD_HEIGHT);
+  lv_display_set_resolution(display, ST7701_WIDTH, ST7701_HEIGHT);
+  lv_display_set_physical_resolution(display, ST7701_WIDTH, ST7701_HEIGHT);
 
   // initialize display driver
   static lv_indev_t* indev = lv_indev_create();

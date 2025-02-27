@@ -28,21 +28,21 @@ static void st7701_data_write(uint8_t data)
 
 static void st7701_cs_enable()
 {
-  Set_EXIO(EXIO_PIN3, EXIO_LOW);
+  tca9554pwr_write(PIN_TCA9554PWR_LCD_SPI_CS, LOW);
   vTaskDelay(pdMS_TO_TICKS(10));
 }
 
 static void st7701_cs_disable()
 {
-  Set_EXIO(EXIO_PIN3, EXIO_HIGH);
+  tca9554pwr_write(PIN_TCA9554PWR_LCD_SPI_CS, HIGH);
   vTaskDelay(pdMS_TO_TICKS(10));
 }
 
 static void st7701_reset()
 {
-  Set_EXIO(EXIO_PIN1, EXIO_LOW);
+  tca9554pwr_write(PIN_TCA9554PWR_LCD_RESET, LOW);
   vTaskDelay(pdMS_TO_TICKS(10));
-  Set_EXIO(EXIO_PIN1, EXIO_HIGH);
+  tca9554pwr_write(PIN_TCA9554PWR_LCD_RESET, HIGH);
   vTaskDelay(pdMS_TO_TICKS(50));
 }
 
@@ -50,9 +50,9 @@ static void st7701_reset()
 void st7701_configure()
 {
   spi_bus_config_t buscfg = {
-    .mosi_io_num = LCD_MOSI_PIN,
+    .mosi_io_num = MOSI,
     .miso_io_num = -1,
-    .sclk_io_num = LCD_CLK_PIN,
+    .sclk_io_num = SCK,
     .quadwp_io_num = -1,
     .quadhd_io_num = -1,
     .max_transfer_sz = 64,
@@ -327,15 +327,15 @@ void st7701_configure()
   esp_lcd_rgb_panel_config_t rgb_config = {
     .clk_src = LCD_CLK_SRC_DEFAULT,
     .timings = {
-        .pclk_hz = ESP_PANEL_LCD_RGB_TIMING_FREQ_HZ,
-        .h_res = ESP_PANEL_LCD_HEIGHT,
-        .v_res = ESP_PANEL_LCD_WIDTH,
-        .hsync_pulse_width = ESP_PANEL_LCD_RGB_TIMING_HPW,
-        .hsync_back_porch = ESP_PANEL_LCD_RGB_TIMING_HBP,
-        .hsync_front_porch = ESP_PANEL_LCD_RGB_TIMING_HFP,
-        .vsync_pulse_width = ESP_PANEL_LCD_RGB_TIMING_VPW,
-        .vsync_back_porch = ESP_PANEL_LCD_RGB_TIMING_VBP,
-        .vsync_front_porch = ESP_PANEL_LCD_RGB_TIMING_VFP,
+        .pclk_hz = ST7701_LCD_TIMING_FREQ_HZ,
+        .h_res = ST7701_HEIGHT,
+        .v_res = ST7701_WIDTH,
+        .hsync_pulse_width = ST7701_LCD_TIMING_HPW,
+        .hsync_back_porch = ST7701_LCD_TIMING_HBP,
+        .hsync_front_porch = ST7701_LCD_TIMING_HFP,
+        .vsync_pulse_width = ST7701_LCD_TIMING_VPW,
+        .vsync_back_porch = ST7701_LCD_TIMING_VBP,
+        .vsync_front_porch = ST7701_LCD_TIMING_VFP,
         .flags = {
             .hsync_idle_low = 0, /*!< The hsync signal is low in IDLE state */
             .vsync_idle_low = 0, /*!< The vsync signal is low in IDLE state */
@@ -344,33 +344,33 @@ void st7701_configure()
             .pclk_idle_high = 0, /*!< The PCLK stays at high level in IDLE phase */
         },
     },
-    .data_width = ESP_PANEL_LCD_RGB_DATA_WIDTH,
-    .bits_per_pixel = ESP_PANEL_LCD_RGB_PIXEL_BITS,
-    .num_fbs = ESP_PANEL_LCD_RGB_FRAME_BUF_NUM,
-    .bounce_buffer_size_px = 10 * ESP_PANEL_LCD_HEIGHT,
+    .data_width = ST7701_LCD_DATA_WIDTH,
+    .bits_per_pixel = ST7701_LCD_PIXEL_BITS,
+    .num_fbs = ST7701_LCD_FRAME_BUF_NUM,
+    .bounce_buffer_size_px = 10 * ST7701_HEIGHT,
     .psram_trans_align = 64,
-    .hsync_gpio_num = ESP_PANEL_LCD_PIN_NUM_RGB_HSYNC,
-    .vsync_gpio_num = ESP_PANEL_LCD_PIN_NUM_RGB_VSYNC,
-    .de_gpio_num = ESP_PANEL_LCD_PIN_NUM_RGB_DE,
-    .pclk_gpio_num = ESP_PANEL_LCD_PIN_NUM_RGB_PCLK,
-    .disp_gpio_num = ESP_PANEL_LCD_PIN_NUM_RGB_DISP,
+    .hsync_gpio_num = PIN_LCD_RGB_HSYNC,
+    .vsync_gpio_num = PIN_LCD_VSYNC,
+    .de_gpio_num = PIN_LCD_DE,
+    .pclk_gpio_num = PIN_LCD_PCLK,
+    .disp_gpio_num = -1,
     .data_gpio_nums = {
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA0,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA1,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA2,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA3,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA4,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA5,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA6,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA7,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA8,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA9,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA10,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA11,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA12,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA13,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA14,
-        ESP_PANEL_LCD_PIN_NUM_RGB_DATA15,
+        PIN_LCD_DATA0,
+        PIN_LCD_DATA1,
+        PIN_LCD_DATA2,
+        PIN_LCD_DATA3,
+        PIN_LCD_DATA4,
+        PIN_LCD_DATA5,
+        PIN_LCD_DATA6,
+        PIN_LCD_DATA7,
+        PIN_LCD_DATA8,
+        PIN_LCD_DATA9,
+        PIN_LCD_DATA10,
+        PIN_LCD_DATA11,
+        PIN_LCD_DATA12,
+        PIN_LCD_DATA13,
+        PIN_LCD_DATA14,
+        PIN_LCD_DATA15,
     },
     .flags = {
         .disp_active_low = 0,
@@ -397,26 +397,27 @@ void st7701_setup()
 void st7701_draw_rect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t* data)
 {
   x1 = x1 + 1, y1 = y1 + 1;
-  if (x1 >= ESP_PANEL_LCD_WIDTH)
-    x1 = ESP_PANEL_LCD_WIDTH;
-  if (y1 >= ESP_PANEL_LCD_HEIGHT)
-    y1 = ESP_PANEL_LCD_HEIGHT;
+  if (x1 >= ST7701_WIDTH)
+    x1 = ST7701_WIDTH;
+  if (y1 >= ST7701_HEIGHT)
+    y1 = ST7701_HEIGHT;
 
-  esp_lcd_panel_draw_bitmap(panel, x0, y0, x1, y1, data); // x_end End index on x-axis (x_end not included)
+  esp_lcd_panel_draw_bitmap(panel, x0, y0, x1, y1, data);
 }
 
 void st7701_backlight_init()
 {
-  ledcAttach(LCD_Backlight_PIN, Frequency, Resolution);
-  st7701_backlight_set(Backlight_MAX); // 0~100
+  ledcAttach(PIN_LCD_BACKLIGHT, ST7701_BACKLIGHT_PWM_FREQ, ST7701_BACKLIGHT_PWM_RES);
+  st7701_backlight_set(ST7701_BACKLIGHT_MAX);
 }
 
 void st7701_backlight_set(uint8_t brightness)
 {
-  if (brightness > Backlight_MAX || brightness < 0)
-    printf("Set Backlight parameters in the range of 0 to 100 \r\n");
-  else {
-    auto dutyCycle = map(brightness, 0, 100, 0, 1024);
-    ledcWrite(LCD_Backlight_PIN, dutyCycle);
-  }
+  if (brightness > ST7701_BACKLIGHT_MAX)
+    brightness = ST7701_BACKLIGHT_MAX;
+  else if (brightness < 0)
+    brightness = 0;
+
+  auto dutyCycle = map(brightness, 0, 100, 0, 1024);
+  ledcWrite(PIN_LCD_BACKLIGHT, dutyCycle);
 }

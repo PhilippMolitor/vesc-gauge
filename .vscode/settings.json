@@ -2,6 +2,7 @@
   "editor.formatOnSave": true,
   "files.associations": {
     "cstdint": "cpp",
-    "*.tcc": "cpp"
+    "*.tcc": "cpp",
+    "cstring": "cpp"
   },
 }
