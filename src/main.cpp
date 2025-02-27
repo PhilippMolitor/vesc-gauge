@@ -1,21 +1,9 @@
 #include <Arduino.h>
 
-#include "drivers/imu/Gyro_QMI8658.h"
-#include "drivers/rtc/RTC_PCF85063.h"
 #include "drivers/sdcard/sdcard.h"
-#include "utils/Wireless.h"
 
 #include "display.h"
 #include "ui.h"
-
-void task_peripherals(void* parameter)
-{
-  for (;;) {
-    QMI8658_Loop();
-    RTC_Loop();
-    vTaskDelay(pdMS_TO_TICKS(100));
-  }
-}
 
 void peripherals_init()
 {
@@ -25,9 +13,6 @@ void peripherals_init()
   // IO expander
   TCA9554PWR_Init(0x00);
   Set_EXIO(EXIO_PIN8, EXIO_LOW);
-
-  PCF85063_Init();
-  QMI8658_Init();
 }
 
 void ui_update_data()
@@ -55,21 +40,17 @@ void setup()
 
   display_init();
   ui_init();
-
-  // periodical task for peripherals
-  xTaskCreatePinnedToCore(
-      task_peripherals,
-      "peripherals",
-      4096,
-      NULL,
-      3,
-      NULL,
-      0);
 }
 
 void loop()
 {
-  ui_update_data();
+  static uint32_t lastUpdateTime = 0;
+  uint32_t currentTime = millis();
+  if (currentTime - lastUpdateTime >= 200) {
+    ui_update_data();
+    lastUpdateTime = currentTime;
+  }
+
   lv_task_handler();
   vTaskDelay(pdMS_TO_TICKS(5));
 }

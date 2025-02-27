@@ -5,10 +5,10 @@
   "c_path": "/assets/ui_font_font_speed_48pt.c",
   "cfg_path": "/assets/ui_font_font_speed_48pt.fcfg",
   "size": 48,
-  "bpp": 1,
+  "bpp": 4,
   "letters": 0,
   "ranges": [
-    "0x20-0x7f"
+    "0x20-0x7F"
   ],
   "symbols": "",
   "customparams": "--no-compress --no-prefilter",

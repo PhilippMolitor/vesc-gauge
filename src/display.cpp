@@ -1,22 +1,15 @@
 #include "display.h"
 
-lv_disp_drv_t disp_drv;
+static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE * 2, MALLOC_CAP_DMA);
+static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE * 2, MALLOC_CAP_DMA);
 
-static lv_disp_draw_buf_t draw_buf;
-IRAM_ATTR static void* buf1 = NULL;
-IRAM_ATTR static void* buf2 = NULL;
-// static lv_color_t buf1[ LVGL_BUF_LEN ];
-// static lv_color_t buf2[ LVGL_BUF_LEN ];
-// static lv_color_t* buf1 = (lv_color_t*) heap_caps_malloc(LVGL_BUF_LEN, MALLOC_CAP_SPIRAM);
-// static lv_color_t* buf2 = (lv_color_t*) heap_caps_malloc(LVGL_BUF_LEN, MALLOC_CAP_SPIRAM);
-
-void display_flush(lv_disp_drv_t* disp_drv, const lv_area_t* area, lv_color_t* color_p)
+void display_flush(lv_display_t* instance, const lv_area_t* area, uint8_t* px_map)
 {
-  st7701_draw_rect(area->x1, area->y1, area->x2, area->y2, (uint8_t*)&color_p->full);
-  lv_disp_flush_ready(disp_drv);
+  st7701_draw_rect(area->x1, area->y1, area->x2, area->y2, px_map);
+  lv_display_flush_ready(instance);
 }
 
-void display_touchpad_update(lv_indev_drv_t* indev_drv, lv_indev_data_t* data)
+void display_touchpad_update(lv_indev_t* drv, lv_indev_data_t* data)
 {
   cst820_event inputs;
   touch_read(&inputs);
@@ -24,51 +17,36 @@ void display_touchpad_update(lv_indev_drv_t* indev_drv, lv_indev_data_t* data)
   if (inputs.points != 0x00) {
     data->point.x = inputs.x;
     data->point.y = inputs.y;
-    data->state = LV_INDEV_STATE_PR;
+    data->state = LV_INDEV_STATE_PRESSED;
   } else {
-    data->state = LV_INDEV_STATE_REL;
+    data->state = LV_INDEV_STATE_RELEASED;
   }
 
   // Gestures are detected by the input points over time
   // if (inputs.gesture != NONE) {}
 }
 
-void display_tick(void* arg)
-{
-  lv_tick_inc(LVGL_TICK_PERIOD_MS);
-}
-
 void display_init(void)
 {
-  st7701_setup();
+  st7701_setup(); // configure the display first
 
   lv_init();
-  esp_lcd_rgb_panel_get_frame_buffer(panel, 2, &buf1, &buf2);
-  lv_disp_draw_buf_init(
-      &draw_buf,
-      buf1,
-      buf2,
-      ESP_PANEL_LCD_WIDTH * ESP_PANEL_LCD_HEIGHT);
 
-  lv_disp_drv_init(&disp_drv);
-  disp_drv.hor_res = LCD_HEIGHT;
-  disp_drv.ver_res = LCD_WIDTH;
-  disp_drv.flush_cb = display_flush;
-  disp_drv.full_refresh = 1;
-  disp_drv.draw_buf = &draw_buf;
-  lv_disp_drv_register(&disp_drv);
+  // lvgl tick
+  lv_tick_set_cb(xTaskGetTickCount);
 
-  static lv_indev_drv_t indev_drv;
-  lv_indev_drv_init(&indev_drv);
-  indev_drv.type = LV_INDEV_TYPE_POINTER;
-  indev_drv.read_cb = display_touchpad_update;
-  lv_indev_drv_register(&indev_drv);
+  // initialize display/buffer
+  lv_display_t* display = lv_display_create(ESP_PANEL_LCD_WIDTH, ESP_PANEL_LCD_HEIGHT);
+  lv_display_set_flush_cb(display, display_flush);
+  lv_display_set_buffers(
+      display,
+      frame_buf_a, frame_buf_b, FB_SIZE,
+      LV_DISPLAY_RENDER_MODE_PARTIAL);
+  lv_display_set_resolution(display, ESP_PANEL_LCD_WIDTH, ESP_PANEL_LCD_HEIGHT);
+  lv_display_set_physical_resolution(display, ESP_PANEL_LCD_WIDTH, ESP_PANEL_LCD_HEIGHT);
 
-  const esp_timer_create_args_t lvgl_tick_timer_args = {
-    .callback = &display_tick,
-    .name = "lvgl_tick"
-  };
-  esp_timer_handle_t lvgl_tick_timer = NULL;
-  esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer);
-  esp_timer_start_periodic(lvgl_tick_timer, LVGL_TICK_PERIOD_MS * 1000);
+  // initialize display driver
+  static lv_indev_t* indev = lv_indev_create();
+  lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
+  lv_indev_set_read_cb(indev, display_touchpad_update);
 }

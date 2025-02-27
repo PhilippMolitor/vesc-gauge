@@ -154,12 +154,6 @@
                 "strtype": "LABEL/Style_main",
                 "strval": "lv.PART.MAIN, Text, Rectangle, Pad, Transform",
                 "InheritedType": 11
-              },
-              {
-                "nid": 1050,
-                "strtype": "LABEL/Recolor",
-                "strval": "False",
-                "InheritedType": 2
               }
             ],
             "saved_objtypeKey": "LABEL"
@@ -874,17 +868,6 @@
                     "strval": "DEFAULT",
                     "childs": [
                       {
-                        "nid": 11110,
-                        "strtype": "_style/Padding",
-                        "intarray": [
-                          0,
-                          3,
-                          0,
-                          0
-                        ],
-                        "InheritedType": 7
-                      },
-                      {
                         "nid": 10310,
                         "strtype": "_style/Arc_Color",
                         "intarray": [
@@ -894,12 +877,6 @@
                           255
                         ],
                         "InheritedType": 7
-                      },
-                      {
-                        "nid": 10320,
-                        "strtype": "_style/Arc_Width",
-                        "integer": 6,
-                        "InheritedType": 6
                       }
                     ],
                     "InheritedType": 1
@@ -1093,12 +1070,6 @@
                     "strtype": "LABEL/Style_main",
                     "strval": "lv.PART.MAIN, Text, Rectangle, Pad, Transform",
                     "InheritedType": 11
-                  },
-                  {
-                    "nid": 1050,
-                    "strtype": "LABEL/Recolor",
-                    "strval": "False",
-                    "InheritedType": 2
                   }
                 ],
                 "saved_objtypeKey": "LABEL"
@@ -1250,12 +1221,6 @@
                     "strtype": "LABEL/Style_main",
                     "strval": "lv.PART.MAIN, Text, Rectangle, Pad, Transform",
                     "InheritedType": 11
-                  },
-                  {
-                    "nid": 1050,
-                    "strtype": "LABEL/Recolor",
-                    "strval": "False",
-                    "InheritedType": 2
                   }
                 ],
                 "saved_objtypeKey": "LABEL"
@@ -1921,7 +1886,7 @@
     "multilang": "DISABLE",
     "description": "",
     "board": "Arduino with TFT_eSPI",
-    "board_version": "v1.1.2",
+    "board_version": "v2.0.0",
     "editor_version": "1.5.0",
     "image": "",
     "export_temp_image": false,
@@ -1936,9 +1901,9 @@
     "uiExportFolderPath": "/Users/phil/Projects/Personal/pocketbike-display/lib/ui",
     "projectExportFolderPath": "",
     "custom_variable_prefix": "ui",
-    "backup_cnt": 16,
+    "backup_cnt": 22,
     "autosave_cnt": 0,
-    "lvgl_version": "8.3.6",
+    "lvgl_version": "9.1.0",
     "callfuncsexport": "C_FILE",
     "imageexport": "SOURCE",
     "lvgl_include_path": "",
@@ -1952,7 +1917,7 @@
     "drive_fatfs_path": "",
     "naming": "_Screen_Widget_Name",
     "naming_force_lowercase": true,
-    "nidcnt": 1000463,
+    "nidcnt": 1000669,
     "BitDepth": 16,
     "Name": "Pocketbike"
   }
