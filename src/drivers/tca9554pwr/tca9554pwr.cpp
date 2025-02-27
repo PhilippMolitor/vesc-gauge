@@ -1,5 +1,7 @@
 #include "tca9554pwr.h"
 
+static const char* LOG_TAG = "io_expander";
+
 static uint8_t tca9554pwr_i2c_read(uint8_t addr) // Read the value of the TCA9554PWR register REG
 {
   Wire.beginTransmission(TCA9554PWR_ADDRESS);
@@ -7,7 +9,7 @@ static uint8_t tca9554pwr_i2c_read(uint8_t addr) // Read the value of the TCA955
   uint8_t result = Wire.endTransmission();
 
   if (result != 0)
-    ESP_LOGE("tca9554pwr", "I2C transmission failed");
+    ESP_LOGE(LOG_TAG, "I2C transmission failed");
 
   Wire.requestFrom(TCA9554PWR_ADDRESS, 1);
 
@@ -26,7 +28,7 @@ static uint8_t tca9554pwr_i2c_write(uint8_t addr, uint8_t data) // Write Data to
   uint8_t result = Wire.endTransmission();
 
   if (result != 0) {
-    ESP_LOGE("tca9554pwr", "I2C transmission failed");
+    ESP_LOGE(LOG_TAG, "I2C transmission failed");
     return -1;
   }
 
@@ -44,7 +46,7 @@ void tca9554pwr_configure(uint8_t pin, uint8_t state)
   uint8_t data = (0x01 << (pin - 1)) | status;
   uint8_t result = tca9554pwr_i2c_write(TCA9554PWR_REG_CONFIG, data);
   if (result != 0) {
-    ESP_LOGE("tca9554pwr", "I/O configuration failure");
+    ESP_LOGE(LOG_TAG, "I/O configuration failure");
   }
 }
 
@@ -52,7 +54,7 @@ void tca9554pwr_configure_all(uint8_t state)
 {
   uint8_t result = tca9554pwr_i2c_write(TCA9554PWR_REG_CONFIG, state);
   if (result != 0)
-    ESP_LOGE("tca9554pwr", "I/O configuration failure");
+    ESP_LOGE(LOG_TAG, "I/O configuration failure");
 }
 
 uint8_t tca9554pwr_read(uint8_t pin)
@@ -69,7 +71,7 @@ uint8_t tca9554pwr_read_all(uint8_t reg = TCA9554PWR_REG_INPUT)
 void tca9554pwr_write(uint8_t pin, uint8_t state)
 {
   if (state > 1 || pin > 8 || pin < 1) {
-    ESP_LOGE("tca9554pwr", "invalid pin: %d", pin);
+    ESP_LOGE(LOG_TAG, "invalid pin: %d", pin);
     return;
   }
 
@@ -84,14 +86,14 @@ void tca9554pwr_write(uint8_t pin, uint8_t state)
   uint8_t result = tca9554pwr_i2c_write(TCA9554PWR_REG_OUTPUT, data);
 
   if (result != 0)
-    ESP_LOGE("tca9554pwr", "failed to set GPIO state", pin);
+    ESP_LOGE(LOG_TAG, "failed to set GPIO state");
 }
 
 void tca9554pwr_write_all(uint8_t state)
 {
   uint8_t result = tca9554pwr_i2c_write(TCA9554PWR_REG_OUTPUT, state);
   if (result != 0)
-    ESP_LOGE("tca9554pwr", "failed to set GPIO state");
+    ESP_LOGE(LOG_TAG, "failed to set GPIO state");
 }
 
 void tca9554pwr_toggle(uint8_t pin)
