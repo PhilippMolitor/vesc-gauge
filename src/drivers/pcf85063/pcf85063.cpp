@@ -1,7 +1,8 @@
-#include "RTC_PCF85063.h"
+#include "pcf85063.h"
+
 #include <esp_log.h>
 
-static const char* LOG_TAG = "PCF85063";
+static const char* LOG_TAG = "rtc";
 
 // BCD conversion functions
 uint8_t dec_to_bcd(uint8_t dec)
