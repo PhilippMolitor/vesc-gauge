@@ -6,6 +6,8 @@
 
 #include <Wire.h>
 
+#include "../../utils/i2c.h"
+
 #define TCA9554PWR_ADDRESS (0x20)
 
 #define TCA9554PWR_REG_INPUT (0x00)
