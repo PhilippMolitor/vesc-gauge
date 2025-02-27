@@ -3,6 +3,8 @@
   "files.associations": {
     "cstdint": "cpp",
     "*.tcc": "cpp",
-    "cstring": "cpp"
+    "cstring": "cpp",
+    "chrono": "cpp",
+    "functional": "cpp"
   },
 }
