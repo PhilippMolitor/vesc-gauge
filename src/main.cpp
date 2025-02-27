@@ -1,8 +1,7 @@
 #include <Arduino.h>
 
+#include "drivers/display/display.h"
 #include "drivers/sdcard/sdcard.h"
-
-#include "display.h"
 #include "ui.h"
 
 void peripherals_init()

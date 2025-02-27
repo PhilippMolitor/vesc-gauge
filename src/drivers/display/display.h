@@ -2,8 +2,8 @@
 
 #include <lvgl.h>
 
-#include "drivers/display/cst820.h"
-#include "drivers/display/st7701.h"
+#include "cst820.h"
+#include "st7701.h"
 
 #define FB_SIZE (ESP_PANEL_LCD_WIDTH * ESP_PANEL_LCD_HEIGHT / 6)
 
