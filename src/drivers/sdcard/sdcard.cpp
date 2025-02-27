@@ -10,7 +10,7 @@ static void sdcard_cs_set(uint8_t state)
   vTaskDelay(pdMS_TO_TICKS(10));
 }
 
-uint8_t sdcard_mount(size_t* size = nullptr, size_t* used = nullptr, const char* mountpoint = "/sdcard")
+uint8_t sdcard_mount(size_t* size, size_t* used, const char* mountpoint)
 {
   if (!SD_MMC.setPins(SCK, MOSI, PIN_SD_SPI_D0, -1, -1, -1)) {
     ESP_LOGE(LOG_TAG, "failed to set pins");
@@ -32,8 +32,12 @@ uint8_t sdcard_mount(size_t* size = nullptr, size_t* used = nullptr, const char*
     return 3;
   }
 
-  *size = SD_MMC.totalBytes();
-  *used = SD_MMC.usedBytes();
+  if (size != nullptr)
+    *size = SD_MMC.totalBytes();
+  if (used != nullptr)
+    *used = SD_MMC.usedBytes();
+
+  return 0;
 }
 
 void sdcard_unmount()
