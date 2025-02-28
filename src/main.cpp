@@ -1,25 +1,35 @@
 #include "settings.h"
 
 #include <Arduino.h>
+#include <ReactESP.h>
 
 #include "drivers/display/display.h"
 #include "drivers/sdcard/sdcard.h"
 #include "drivers/tca9554pwr/tca9554pwr.h"
 #include "ui.h"
+#include "utils/lpfv.h"
 
-void ui_update_data()
+using namespace reactesp;
+
+static EventLoop evloop;
+static TimeBasedLPF speed;
+
+void task_vesc_poll()
 {
   static uint32_t startTime = millis();
   uint32_t currentTime = millis();
   float elapsedTime = (currentTime - startTime) / 1000.0;
-
-  float value = 25.0 + 25.0 * sin((PI / 2.0) * elapsedTime);
-
   if (elapsedTime >= 4.0)
     startTime = currentTime; // reset after 4 seconds
 
+  float value = 25.0 + 25.0 * sin((PI / 2.0) * elapsedTime);
+  speed.update(value);
+}
+
+void task_ui_data_refresh()
+{
   char buffer[10];
-  snprintf(buffer, sizeof(buffer), "%.0f", value);
+  snprintf(buffer, sizeof(buffer), "%.0f", speed.value());
   lv_label_set_text(ui_main_label_speed_value, buffer);
 }
 
@@ -35,17 +45,13 @@ void setup()
 
   display_init();
   ui_init();
+
+  evloop.onRepeat(2, lv_task_handler);
+  evloop.onRepeat(1000 / UPDATE_HZ_VESC_POLL, task_vesc_poll);
+  evloop.onRepeat(1000 / UPDATE_HZ_UI_DATA, task_ui_data_refresh);
 }
 
 void loop()
 {
-  static uint32_t lastUpdateTime = 0;
-  uint32_t currentTime = millis();
-  if (currentTime - lastUpdateTime >= 200) {
-    ui_update_data();
-    lastUpdateTime = currentTime;
-  }
-
-  lv_task_handler();
-  vTaskDelay(pdMS_TO_TICKS(5));
+  evloop.tick();
 }
