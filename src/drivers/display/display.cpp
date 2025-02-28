@@ -1,7 +1,7 @@
 #include "display.h"
 
-static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE * 2, MALLOC_CAP_DMA);
-static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE * 2, MALLOC_CAP_DMA);
+static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
+static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
 
 void display_flush(lv_display_t* instance, const lv_area_t* area, uint8_t* px_map)
 {

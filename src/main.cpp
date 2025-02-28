@@ -1,6 +1,8 @@
 #include "settings.h"
 
 #include <Arduino.h>
+
+#include <ComEVesc.h>
 #include <ReactESP.h>
 
 #include "drivers/display/display.h"
@@ -11,11 +13,18 @@
 
 using namespace reactesp;
 
+// handles
 static EventLoop evloop;
+static ComEVesc vesc(TIMEOUT_VESC_READ);
+
+// state
 static TimeBasedLPF speed;
 
 void task_vesc_poll()
 {
+  // TODO: enable
+  // vesc.getVescValues();
+
   static uint32_t startTime = millis();
   uint32_t currentTime = millis();
   float elapsedTime = (currentTime - startTime) / 1000.0;
@@ -45,6 +54,9 @@ void setup()
 
   display_init();
   ui_init();
+
+  Serial.begin(115200);
+  vesc.setSerialPort(&Serial);
 
   evloop.onRepeat(2, lv_task_handler);
   evloop.onRepeat(1000 / UPDATE_HZ_VESC_POLL, task_vesc_poll);
