@@ -2,12 +2,6 @@
 
 static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
 static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-// static lv_color_t frame_buf_a[FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8)];
-// static lv_color_t frame_buf_b[FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8)];
-// gets heap-allocated from esp_lcd
-// static lv_color_t* frame_buf_a;
-// static lv_color_t* frame_buf_b;
-// static uint8_t __attribute__((aligned(32))) buffer[1024];
 
 void display_flush(lv_display_t* instance, const lv_area_t* area, uint8_t* px_map)
 {
