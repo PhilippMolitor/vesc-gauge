@@ -46,10 +46,15 @@ extern lv_obj_t *ui_main_label_speed_value;
 extern lv_obj_t *ui_main_label_speed_label;
 // CUSTOM VARIABLES
 
-// SCREEN: ui_screen_settings
-void ui_screen_settings_screen_init(void);
-void ui_event_screen_settings( lv_event_t * e);
-extern lv_obj_t *ui_screen_settings;
+// SCREEN: ui_screen_wled_settings
+void ui_screen_wled_settings_screen_init(void);
+void ui_event_screen_wled_settings( lv_event_t * e);
+extern lv_obj_t *ui_screen_wled_settings;
+void ui_event_wled_settings_switch_enable( lv_event_t * e);
+extern lv_obj_t *ui_wled_settings_switch_enable;
+extern lv_obj_t *ui_wled_settings_label_onoff;
+extern lv_obj_t *ui_wled_settings_label_macaddr;
+extern lv_obj_t *ui_wled_settings_label_status;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_screen_profile_editor

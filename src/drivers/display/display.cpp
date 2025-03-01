@@ -1,7 +1,12 @@
 #include "display.h"
 
-static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
-static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
+static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
+static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
+// static lv_color_t frame_buf_a[FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8)];
+// static lv_color_t frame_buf_b[FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8)];
+// gets heap-allocated from esp_lcd
+// static lv_color_t* frame_buf_a;
+// static lv_color_t* frame_buf_b;
 
 void display_flush(lv_display_t* instance, const lv_area_t* area, uint8_t* px_map)
 {
@@ -28,19 +33,17 @@ void display_touchpad_update(lv_indev_t* drv, lv_indev_data_t* data)
 
 void display_init(void)
 {
-  st7701_setup(); // configure the display first
+  st7701_setup(frame_buf_a, frame_buf_b); // configure the display first
 
   lv_init();
-
-  // lvgl tick
-  lv_tick_set_cb(xTaskGetTickCount);
+  lv_tick_set_cb(xTaskGetTickCount); // lvgl tick
 
   // initialize display/buffer
   lv_display_t* display = lv_display_create(ST7701_WIDTH, ST7701_HEIGHT);
   lv_display_set_flush_cb(display, display_flush);
   lv_display_set_buffers(
       display,
-      frame_buf_a, frame_buf_b, FB_SIZE,
+      frame_buf_a, frame_buf_b, FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8),
       LV_DISPLAY_RENDER_MODE_PARTIAL);
   lv_display_set_resolution(display, ST7701_WIDTH, ST7701_HEIGHT);
   lv_display_set_physical_resolution(display, ST7701_WIDTH, ST7701_HEIGHT);
