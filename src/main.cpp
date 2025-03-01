@@ -78,7 +78,7 @@ void task_ui_data_refresh()
   lv_label_set_text(ui_main_label_speed_value, speed_str);
 
   // wled
-  lv_label_set_text(ui_wled_settings_label_status, state_wled_enabled ? "active" : "inactive");
+  lv_label_set_text(ui_wled_settings_label_status, state_wled_power_on ? "active" : "inactive");
   char wled_mac_str[23];
   snprintf(wled_mac_str, sizeof(wled_mac_str), "MAC: %02X:%02X:%02X:%02X:%02X:%02X",
       wled_mac[0], wled_mac[1], wled_mac[2], wled_mac[3], wled_mac[4], wled_mac[5]);
