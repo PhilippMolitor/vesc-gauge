@@ -36,5 +36,5 @@ struct cst820_event {
   uint16_t y;
 };
 
-uint8_t touch_init();
-uint8_t touch_read(cst820_event* data);
+uint8_t cst820_init();
+uint8_t cst820_read(cst820_event* data);

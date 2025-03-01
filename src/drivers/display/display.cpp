@@ -1,12 +1,13 @@
 #include "display.h"
 
-static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
-static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA);
+static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
 // static lv_color_t frame_buf_a[FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8)];
 // static lv_color_t frame_buf_b[FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8)];
 // gets heap-allocated from esp_lcd
 // static lv_color_t* frame_buf_a;
 // static lv_color_t* frame_buf_b;
+// static uint8_t __attribute__((aligned(32))) buffer[1024];
 
 void display_flush(lv_display_t* instance, const lv_area_t* area, uint8_t* px_map)
 {
@@ -17,7 +18,7 @@ void display_flush(lv_display_t* instance, const lv_area_t* area, uint8_t* px_ma
 void display_touchpad_update(lv_indev_t* drv, lv_indev_data_t* data)
 {
   cst820_event inputs;
-  touch_read(&inputs);
+  cst820_read(&inputs);
 
   if (inputs.points != 0x00) {
     data->point.x = inputs.x;
@@ -33,7 +34,8 @@ void display_touchpad_update(lv_indev_t* drv, lv_indev_data_t* data)
 
 void display_init(void)
 {
-  st7701_setup(frame_buf_a, frame_buf_b); // configure the display first
+  st7701_init(frame_buf_a, frame_buf_b);
+  cst820_init();
 
   lv_init();
   lv_tick_set_cb(xTaskGetTickCount); // lvgl tick

@@ -4,6 +4,7 @@
 
 squareline/backup/
 squareline/cache/
+squareline/*.py
 
 .DS_Store
 ._*

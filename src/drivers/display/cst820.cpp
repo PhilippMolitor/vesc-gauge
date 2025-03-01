@@ -17,7 +17,7 @@ static void cst820_autosleep_set(bool enable)
   i2c_write(CST820_ADDR, CST820_REG_AUTOSLEEP_DISABLE, &state, 1);
 }
 
-uint8_t touch_init(void)
+uint8_t cst820_init(void)
 {
   pinMode(PIN_TOUCH_INTERRUPT, INPUT_PULLUP);
 
@@ -27,7 +27,7 @@ uint8_t touch_init(void)
   return true;
 }
 
-uint8_t touch_read(cst820_event* data)
+uint8_t cst820_read(cst820_event* data)
 {
   uint8_t buf[6];
   i2c_read(CST820_ADDR, CST820_REG_GESTURE_ID, buf, 6);

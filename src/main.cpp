@@ -13,6 +13,7 @@
 #include "drivers/sdcard/sdcard.h"
 #include "drivers/tca9554pwr/tca9554pwr.h"
 #include "utils/lpfv.h"
+#include "utils/timing.h"
 #include "wled_esp_now/wled_esp_now.h"
 
 using namespace reactesp;
@@ -21,7 +22,7 @@ static constexpr char* LOG_TAG = "main";
 
 // handles
 static EventLoop evloop;
-static ComEVesc vesc(TIMEOUT_VESC_READ);
+static ComEVesc vesc(50);
 
 // service state
 static bool state_wled_enabled = false;
@@ -38,8 +39,6 @@ void ui_cb_wled_switch(lv_event_t* e)
   if (code == LV_EVENT_VALUE_CHANGED) {
     auto state = lv_obj_has_state(obj, LV_STATE_CHECKED);
     state_wled_power_on = state;
-    LV_UNUSED(obj);
-    ESP_LOGI(LOG_TAG, "wled switch: %s", state ? "on" : "off");
   }
 }
 
@@ -94,11 +93,9 @@ void task_wled()
 
   // initialize esp_now
   if (!initialized) {
-    wled_esp_now_init(1);
     wled_esp_now_mac_get(wled_mac);
     initialized = true;
 
-    ESP_LOGI(LOG_TAG, "initialized wled!");
     return;
   }
 
@@ -112,8 +109,6 @@ void task_wled()
   if (last_power_on != state_wled_power_on) {
     wled_esp_now_send(state_wled_power_on ? wled_esp_now_cmd::POWER_ON : wled_esp_now_cmd::POWER_OFF);
     last_power_on = state_wled_power_on;
-
-    ESP_LOGI(LOG_TAG, "wled power: %s", state_wled_power_on ? "on" : "off");
     return;
   }
 }
@@ -128,6 +123,10 @@ void setup()
   // turn off buzzer
   tca9554pwr_write(PIN_TCA9554PWR_BUZZER, LOW);
 
+  // important: this must be done before initializing the display,
+  // otherwise the microcontroller will crash.
+  wled_esp_now_init(1);
+
   display_init();
   ui_init();
 
@@ -135,15 +134,15 @@ void setup()
   vesc.setSerialPort(&Serial);
 
   // system
-  evloop.onRepeat(2, lv_task_handler);
-  evloop.onRepeat(1000 / UPDATE_HZ_UI_DATA, task_ui_data_refresh);
+  evloop.onRepeat(Hz(250), lv_task_handler);
+  evloop.onRepeat(Hz(16), task_ui_data_refresh);
 
   // services
-  evloop.onRepeat(1000 / UPDATE_HZ_VESC_POLL, task_vesc_poll);
-  evloop.onRepeat(1000, task_wled);
+  evloop.onRepeat(Hz(10), task_vesc_poll);
+  evloop.onRepeat(Hz(1), task_wled);
 
   // debug log task
-  evloop.onRepeat(5000, task_debug_perfmon);
+  evloop.onRepeat(Hz(0.2), task_debug_perfmon);
 }
 
 void loop()

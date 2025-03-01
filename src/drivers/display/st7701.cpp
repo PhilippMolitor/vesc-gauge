@@ -1,7 +1,7 @@
 #include "st7701.h"
 
-static esp_lcd_panel_handle_t panel = NULL;
 static spi_device_handle_t spi = NULL;
+static esp_lcd_panel_handle_t panel = NULL;
 
 static void st7701_cmd_write(uint8_t cmd)
 {
@@ -54,7 +54,7 @@ static void st7701_reset()
 }
 
 // configures the display via SPI - this bus is not used for display data
-static void st7701_configure(void* buf_a, void* buf_b)
+static void st7701_initialize_driver()
 {
   spi_bus_config_t buscfg = {
     .mosi_io_num = MOSI,
@@ -76,83 +76,86 @@ static void st7701_configure(void* buf_a, void* buf_b)
   spi_bus_add_device(SPI2_HOST, &devcfg, &spi);
 
   st7701_cs_enable();
+  {
+    // Enter command mode and access page 0x10
+    st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x10 }, 5);
+    // Set scan line configuration
+    st7701_write(0xC0, (const uint8_t[]) { 0x3B, 0x00 }, 2);
+    // Set vertical back porch
+    st7701_write(0xC1, (const uint8_t[]) { 0x0B, 0x02 }, 2);
+    // Set display timing
+    st7701_write(0xC2, (const uint8_t[]) { 0x07, 0x02 }, 2);
+    // Set display control
+    st7701_write(0xCC, (const uint8_t[]) { 0x10 }, 1);
+    // Configure RGB interface format
+    st7701_write(0xCD, (const uint8_t[]) { 0x08 }, 1);
+    // Positive gamma correction for red (IPS)
+    st7701_write(0xB0, (const uint8_t[]) { 0x00, 0x11, 0x16, 0x0e, 0x11, 0x06, 0x05, 0x09, 0x08, 0x21, 0x06, 0x13, 0x10, 0x29, 0x31, 0x18 }, 16);
+    // Negative gamma correction for red (IPS)
+    st7701_write(0xB1, (const uint8_t[]) { 0x00, 0x11, 0x16, 0x0e, 0x11, 0x07, 0x05, 0x09, 0x09, 0x21, 0x05, 0x13, 0x11, 0x2a, 0x31, 0x18 }, 16);
+    // Enter command mode and access page 0x11
+    st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x11 }, 5);
+    // Set VOP voltage (Display driving voltage)
+    st7701_write(0xB0, (const uint8_t[]) { 0x6d }, 1);
+    // Set VCOM voltage
+    st7701_write(0xB1, (const uint8_t[]) { 0x37 }, 1);
+    // Set VGH voltage (Gate high voltage)
+    st7701_write(0xB2, (const uint8_t[]) { 0x81 }, 1);
+    // Power control settings
+    st7701_write(0xB3, (const uint8_t[]) { 0x80 }, 1);
+    // Set VGL voltage (Gate low voltage)
+    st7701_write(0xB5, (const uint8_t[]) { 0x43 }, 1);
+    // Additional power settings
+    st7701_write(0xB7, (const uint8_t[]) { 0x85 }, 1);
+    st7701_write(0xB8, (const uint8_t[]) { 0x20 }, 1);
+    st7701_write(0xC1, (const uint8_t[]) { 0x78 }, 1);
+    st7701_write(0xC2, (const uint8_t[]) { 0x78 }, 1);
+    // Display control
+    st7701_write(0xD0, (const uint8_t[]) { 0x88 }, 1);
+    // Source timing settings
+    st7701_write(0xE0, (const uint8_t[]) { 0x00, 0x00, 0x02 }, 3);
+    st7701_write(0xE1, (const uint8_t[]) { 0x03, 0xA0, 0x00, 0x00, 0x04, 0xA0, 0x00, 0x00, 0x00, 0x20, 0x20 }, 11);
+    // Source control settings
+    st7701_write(0xE2, (const uint8_t[]) { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 13);
+    // Timing control settings
+    st7701_write(0xE3, (const uint8_t[]) { 0x00, 0x00, 0x11, 0x00 }, 4);
+    st7701_write(0xE4, (const uint8_t[]) { 0x22, 0x00 }, 2);
+    st7701_write(0xE5, (const uint8_t[]) { 0x05, 0xEC, 0xA0, 0xA0, 0x07, 0xEE, 0xA0, 0xA0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 16);
+    st7701_write(0xE6, (const uint8_t[]) { 0x00, 0x00, 0x11, 0x00 }, 4);
+    st7701_write(0xE7, (const uint8_t[]) { 0x22, 0x00 }, 2);
+    st7701_write(0xE8, (const uint8_t[]) { 0x06, 0xED, 0xA0, 0xA0, 0x08, 0xEF, 0xA0, 0xA0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 16);
+    // Window settings
+    st7701_write(0xEB, (const uint8_t[]) { 0x00, 0x00, 0x40, 0x40, 0x00, 0x00, 0x00 }, 7);
+    // Display enhancement settings
+    st7701_write(0xED, (const uint8_t[]) { 0xFF, 0xFF, 0xFF, 0xBA, 0x0A, 0xBF, 0x45, 0xFF, 0xFF, 0x54, 0xFB, 0xA0, 0xAB, 0xFF, 0xFF, 0xFF }, 16);
+    // Power control settings
+    st7701_write(0xEF, (const uint8_t[]) { 0x10, 0x0D, 0x04, 0x08, 0x3F, 0x1F }, 6);
+    // Enter command mode and access page 0x13
+    st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x13 }, 5);
+    st7701_write(0xEF, (const uint8_t[]) { 0x08 }, 1);
+    // Return to page 0
+    st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x00 }, 5);
+    // Set display orientation
+    st7701_write(0x36, (const uint8_t[]) { 0x00 }, 1);
+    // Set color mode (18-bit RGB666)
+    st7701_write(0x3A, (const uint8_t[]) { 0x66 }, 1);
+    // Exit sleep mode
+    st7701_write(0x11, NULL, 0);
 
-  // Enter command mode and access page 0x10
-  st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x10 }, 5);
-  // Set scan line configuration
-  st7701_write(0xC0, (const uint8_t[]) { 0x3B, 0x00 }, 2);
-  // Set vertical back porch
-  st7701_write(0xC1, (const uint8_t[]) { 0x0B, 0x02 }, 2);
-  // Set display timing
-  st7701_write(0xC2, (const uint8_t[]) { 0x07, 0x02 }, 2);
-  // Set display control
-  st7701_write(0xCC, (const uint8_t[]) { 0x10 }, 1);
-  // Configure RGB interface format
-  st7701_write(0xCD, (const uint8_t[]) { 0x08 }, 1);
-  // Positive gamma correction for red (IPS)
-  st7701_write(0xB0, (const uint8_t[]) { 0x00, 0x11, 0x16, 0x0e, 0x11, 0x06, 0x05, 0x09, 0x08, 0x21, 0x06, 0x13, 0x10, 0x29, 0x31, 0x18 }, 16);
-  // Negative gamma correction for red (IPS)
-  st7701_write(0xB1, (const uint8_t[]) { 0x00, 0x11, 0x16, 0x0e, 0x11, 0x07, 0x05, 0x09, 0x09, 0x21, 0x05, 0x13, 0x11, 0x2a, 0x31, 0x18 }, 16);
-  // Enter command mode and access page 0x11
-  st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x11 }, 5);
-  // Set VOP voltage (Display driving voltage)
-  st7701_write(0xB0, (const uint8_t[]) { 0x6d }, 1);
-  // Set VCOM voltage
-  st7701_write(0xB1, (const uint8_t[]) { 0x37 }, 1);
-  // Set VGH voltage (Gate high voltage)
-  st7701_write(0xB2, (const uint8_t[]) { 0x81 }, 1);
-  // Power control settings
-  st7701_write(0xB3, (const uint8_t[]) { 0x80 }, 1);
-  // Set VGL voltage (Gate low voltage)
-  st7701_write(0xB5, (const uint8_t[]) { 0x43 }, 1);
-  // Additional power settings
-  st7701_write(0xB7, (const uint8_t[]) { 0x85 }, 1);
-  st7701_write(0xB8, (const uint8_t[]) { 0x20 }, 1);
-  st7701_write(0xC1, (const uint8_t[]) { 0x78 }, 1);
-  st7701_write(0xC2, (const uint8_t[]) { 0x78 }, 1);
-  // Display control
-  st7701_write(0xD0, (const uint8_t[]) { 0x88 }, 1);
-  // Source timing settings
-  st7701_write(0xE0, (const uint8_t[]) { 0x00, 0x00, 0x02 }, 3);
-  st7701_write(0xE1, (const uint8_t[]) { 0x03, 0xA0, 0x00, 0x00, 0x04, 0xA0, 0x00, 0x00, 0x00, 0x20, 0x20 }, 11);
-  // Source control settings
-  st7701_write(0xE2, (const uint8_t[]) { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 13);
-  // Timing control settings
-  st7701_write(0xE3, (const uint8_t[]) { 0x00, 0x00, 0x11, 0x00 }, 4);
-  st7701_write(0xE4, (const uint8_t[]) { 0x22, 0x00 }, 2);
-  st7701_write(0xE5, (const uint8_t[]) { 0x05, 0xEC, 0xA0, 0xA0, 0x07, 0xEE, 0xA0, 0xA0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 16);
-  st7701_write(0xE6, (const uint8_t[]) { 0x00, 0x00, 0x11, 0x00 }, 4);
-  st7701_write(0xE7, (const uint8_t[]) { 0x22, 0x00 }, 2);
-  st7701_write(0xE8, (const uint8_t[]) { 0x06, 0xED, 0xA0, 0xA0, 0x08, 0xEF, 0xA0, 0xA0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, 16);
-  // Window settings
-  st7701_write(0xEB, (const uint8_t[]) { 0x00, 0x00, 0x40, 0x40, 0x00, 0x00, 0x00 }, 7);
-  // Display enhancement settings
-  st7701_write(0xED, (const uint8_t[]) { 0xFF, 0xFF, 0xFF, 0xBA, 0x0A, 0xBF, 0x45, 0xFF, 0xFF, 0x54, 0xFB, 0xA0, 0xAB, 0xFF, 0xFF, 0xFF }, 16);
-  // Power control settings
-  st7701_write(0xEF, (const uint8_t[]) { 0x10, 0x0D, 0x04, 0x08, 0x3F, 0x1F }, 6);
-  // Enter command mode and access page 0x13
-  st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x13 }, 5);
-  st7701_write(0xEF, (const uint8_t[]) { 0x08 }, 1);
-  // Return to page 0
-  st7701_write(0xFF, (const uint8_t[]) { 0x77, 0x01, 0x00, 0x00, 0x00 }, 5);
-  // Set display orientation
-  st7701_write(0x36, (const uint8_t[]) { 0x00 }, 1);
-  // Set color mode (18-bit RGB666)
-  st7701_write(0x3A, (const uint8_t[]) { 0x66 }, 1);
-  // Exit sleep mode
-  st7701_write(0x11, NULL, 0);
+    vTaskDelay(pdMS_TO_TICKS(480));
 
-  vTaskDelay(pdMS_TO_TICKS(480));
+    // Display inversion mode off
+    st7701_write(0x20, NULL, 0);
+    vTaskDelay(pdMS_TO_TICKS(120));
 
-  // Display inversion mode off
-  st7701_write(0x20, NULL, 0);
-  vTaskDelay(pdMS_TO_TICKS(120));
-
-  // Turn on the display
-  st7701_write(0x29, NULL, 0);
-
+    // Turn on the display
+    st7701_write(0x29, NULL, 0);
+  }
   st7701_cs_disable();
+}
 
+void st7701_initialize_panel(void* buf_a, void* buf_b)
+{
   //  RGB
   esp_lcd_rgb_panel_config_t rgb_config = {
     .clk_src = LCD_CLK_SRC_DEFAULT,
@@ -212,16 +215,15 @@ static void st7701_configure(void* buf_a, void* buf_b)
     },
   };
   esp_lcd_new_rgb_panel(&rgb_config, &panel);
-  // esp_lcd_rgb_panel_get_frame_buffer(panel, 2, &buf_a, &buf_b);
   esp_lcd_panel_reset(panel);
   esp_lcd_panel_init(panel);
 }
 
-void st7701_setup(void* buf_a, void* buf_b)
+void st7701_init(void* buf_a, void* buf_b)
 {
   st7701_reset();
-  st7701_configure(buf_a, buf_b);
-  touch_init();
+  st7701_initialize_driver();
+  st7701_initialize_panel(buf_a, buf_b);
   st7701_backlight_init();
 }
 
