@@ -11,6 +11,7 @@ static bool state_tx_ack = false;
 
 static void wled_tx_cb(const uint8_t* mac_addr, esp_now_send_status_t status)
 {
+  ESP_LOGD(LOG_TAG, "tx status: %s", status == ESP_NOW_SEND_SUCCESS ? "success" : "fail");
   state_tx_ack = true;
 }
 
@@ -86,6 +87,8 @@ uint8_t wled_esp_now_send(wled_esp_now_cmd cmd)
   if (cmd == wled_esp_now_cmd::POWER_ON)
     p.program = 0x91;
 
+  ESP_LOGD(LOG_TAG, "sending packet: %d", cmd);
+
   auto send_error = esp_now_send(
       state_espnow_peer_info.peer_addr,
       (uint8_t*)&p,
@@ -95,6 +98,8 @@ uint8_t wled_esp_now_send(wled_esp_now_cmd cmd)
     ESP_LOGE(LOG_TAG, "failed to send message");
     return 2;
   }
+
+  ESP_LOGD(LOG_TAG, "packet queued");
 
   auto timeout = esp_timer_get_time() + WLED_ESP_NOW_TX_TIMEOUT;
   while (esp_timer_get_time() < timeout && state_tx_ack == false)
