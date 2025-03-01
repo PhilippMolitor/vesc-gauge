@@ -14,7 +14,7 @@ ui_wled_settings_switch_enable = lv_switch_create(ui_screen_wled_settings);
 lv_obj_set_width( ui_wled_settings_switch_enable, 141);
 lv_obj_set_height( ui_wled_settings_switch_enable, 83);
 lv_obj_set_x( ui_wled_settings_switch_enable, -2 );
-lv_obj_set_y( ui_wled_settings_switch_enable, 41 );
+lv_obj_set_y( ui_wled_settings_switch_enable, 46 );
 lv_obj_set_align( ui_wled_settings_switch_enable, LV_ALIGN_CENTER );
 
 
@@ -43,7 +43,49 @@ lv_obj_set_y( ui_wled_settings_label_status, 150 );
 lv_obj_set_align( ui_wled_settings_label_status, LV_ALIGN_CENTER );
 lv_label_set_text(ui_wled_settings_label_status,"disconnected");
 
+ui_wled_settings_button_brightness_dec = lv_button_create(ui_screen_wled_settings);
+lv_obj_set_width( ui_wled_settings_button_brightness_dec, 64);
+lv_obj_set_height( ui_wled_settings_button_brightness_dec, 64);
+lv_obj_set_x( ui_wled_settings_button_brightness_dec, -140 );
+lv_obj_set_y( ui_wled_settings_button_brightness_dec, 46 );
+lv_obj_set_align( ui_wled_settings_button_brightness_dec, LV_ALIGN_CENTER );
+lv_obj_add_flag( ui_wled_settings_button_brightness_dec, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+lv_obj_remove_flag( ui_wled_settings_button_brightness_dec, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+
+ui_wled_settings_label_brightness_dec_minus = lv_label_create(ui_wled_settings_button_brightness_dec);
+lv_obj_set_width( ui_wled_settings_label_brightness_dec_minus, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_wled_settings_label_brightness_dec_minus, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_align( ui_wled_settings_label_brightness_dec_minus, LV_ALIGN_CENTER );
+lv_label_set_text(ui_wled_settings_label_brightness_dec_minus,"-");
+lv_obj_set_style_text_font(ui_wled_settings_label_brightness_dec_minus, &ui_font_font_speed_48pt, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_left(ui_wled_settings_label_brightness_dec_minus, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_wled_settings_label_brightness_dec_minus, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_wled_settings_label_brightness_dec_minus, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_wled_settings_label_brightness_dec_minus, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+
+ui_wled_settings_button_brightness_inc = lv_button_create(ui_screen_wled_settings);
+lv_obj_set_width( ui_wled_settings_button_brightness_inc, 64);
+lv_obj_set_height( ui_wled_settings_button_brightness_inc, 64);
+lv_obj_set_x( ui_wled_settings_button_brightness_inc, 140 );
+lv_obj_set_y( ui_wled_settings_button_brightness_inc, 46 );
+lv_obj_set_align( ui_wled_settings_button_brightness_inc, LV_ALIGN_CENTER );
+lv_obj_add_flag( ui_wled_settings_button_brightness_inc, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+lv_obj_remove_flag( ui_wled_settings_button_brightness_inc, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+
+ui_wled_settings_label_brightness_inc_plus = lv_label_create(ui_wled_settings_button_brightness_inc);
+lv_obj_set_width( ui_wled_settings_label_brightness_inc_plus, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_wled_settings_label_brightness_inc_plus, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_align( ui_wled_settings_label_brightness_inc_plus, LV_ALIGN_CENTER );
+lv_label_set_text(ui_wled_settings_label_brightness_inc_plus,"+");
+lv_obj_set_style_text_font(ui_wled_settings_label_brightness_inc_plus, &ui_font_font_speed_48pt, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_left(ui_wled_settings_label_brightness_inc_plus, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_wled_settings_label_brightness_inc_plus, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_wled_settings_label_brightness_inc_plus, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_wled_settings_label_brightness_inc_plus, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+
 lv_obj_add_event_cb(ui_wled_settings_switch_enable, ui_event_wled_settings_switch_enable, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_wled_settings_button_brightness_dec, ui_event_wled_settings_button_brightness_dec, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_wled_settings_button_brightness_inc, ui_event_wled_settings_button_brightness_inc, LV_EVENT_ALL, NULL);
 lv_obj_add_event_cb(ui_screen_wled_settings, ui_event_screen_wled_settings, LV_EVENT_ALL, NULL);
 
 }

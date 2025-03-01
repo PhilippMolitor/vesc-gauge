@@ -39,13 +39,19 @@ lv_obj_t *ui_wled_settings_switch_enable;
 lv_obj_t *ui_wled_settings_label_onoff;
 lv_obj_t *ui_wled_settings_label_macaddr;
 lv_obj_t *ui_wled_settings_label_status;
+void ui_event_wled_settings_button_brightness_dec( lv_event_t * e);
+lv_obj_t *ui_wled_settings_button_brightness_dec;
+lv_obj_t *ui_wled_settings_label_brightness_dec_minus;
+void ui_event_wled_settings_button_brightness_inc( lv_event_t * e);
+lv_obj_t *ui_wled_settings_button_brightness_inc;
+lv_obj_t *ui_wled_settings_label_brightness_inc_plus;
 // CUSTOM VARIABLES
 
 
-// SCREEN: ui_screen_profile_editor
-void ui_screen_profile_editor_screen_init(void);
-void ui_event_screen_profile_editor( lv_event_t * e);
-lv_obj_t *ui_screen_profile_editor;
+// SCREEN: ui_screen_lights_control
+void ui_screen_lights_control_screen_init(void);
+void ui_event_screen_lights_control( lv_event_t * e);
+lv_obj_t *ui_screen_lights_control;
 // CUSTOM VARIABLES
 
 // EVENTS
@@ -74,7 +80,11 @@ void ui_event_screen_main( lv_event_t * e) {
 
 if ( event_code == LV_EVENT_GESTURE &&  lv_indev_get_gesture_dir(lv_indev_active()) == LV_DIR_TOP  ) {
 lv_indev_wait_release(lv_indev_active());
-      _ui_screen_change( &ui_screen_wled_settings, LV_SCR_LOAD_ANIM_MOVE_TOP, 500, 0, &ui_screen_wled_settings_screen_init);
+      _ui_screen_change( &ui_screen_wled_settings, LV_SCR_LOAD_ANIM_MOVE_TOP, 250, 0, &ui_screen_wled_settings_screen_init);
+}
+if ( event_code == LV_EVENT_GESTURE &&  lv_indev_get_gesture_dir(lv_indev_active()) == LV_DIR_BOTTOM  ) {
+lv_indev_wait_release(lv_indev_active());
+      _ui_screen_change( &ui_screen_lights_control, LV_SCR_LOAD_ANIM_MOVE_BOTTOM, 250, 0, &ui_screen_lights_control_screen_init);
 }
 }
 
@@ -95,12 +105,28 @@ if ( event_code == LV_EVENT_VALUE_CHANGED) {
 }
 }
 
-void ui_event_screen_profile_editor( lv_event_t * e) {
+void ui_event_wled_settings_button_brightness_dec( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);
 
-if ( event_code == LV_EVENT_GESTURE &&  lv_indev_get_gesture_dir(lv_indev_active()) == LV_DIR_BOTTOM  ) {
+if ( event_code == LV_EVENT_CLICKED) {
+      ui_cb_wled_brightness_inc( e );
+}
+}
+
+void ui_event_wled_settings_button_brightness_inc( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+if ( event_code == LV_EVENT_CLICKED) {
+      ui_cb_wled_brightness_inc( e );
+}
+}
+
+void ui_event_screen_lights_control( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+if ( event_code == LV_EVENT_GESTURE &&  lv_indev_get_gesture_dir(lv_indev_active()) == LV_DIR_TOP  ) {
 lv_indev_wait_release(lv_indev_active());
-      _ui_screen_change( &ui_screen_main, LV_SCR_LOAD_ANIM_MOVE_BOTTOM, 500, 0, &ui_screen_main_screen_init);
+      _ui_screen_change( &ui_screen_main, LV_SCR_LOAD_ANIM_MOVE_TOP, 500, 0, &ui_screen_main_screen_init);
 }
 }
 
@@ -114,7 +140,7 @@ lv_disp_set_theme(dispp, theme);
 ui_screen_boot_screen_init();
 ui_screen_main_screen_init();
 ui_screen_wled_settings_screen_init();
-ui_screen_profile_editor_screen_init();
+ui_screen_lights_control_screen_init();
 ui_startevents____initial_actions0 = lv_obj_create(NULL);
 lv_disp_load_scr( ui_screen_boot);
 }

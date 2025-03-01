@@ -26,6 +26,8 @@ static ComEVesc vesc(50);
 
 // service state
 static bool state_wled_power_on = false;
+static bool state_wled_brightness_dec = false;
+static bool state_wled_brightness_inc = false;
 
 // ui state
 static TimeBasedLPF speed;
@@ -33,12 +35,19 @@ static uint8_t wled_mac[6] = { 0 };
 
 void ui_cb_wled_switch(lv_event_t* e)
 {
-  lv_event_code_t code = lv_event_get_code(e);
   lv_obj_t* obj = lv_event_get_target_obj(e);
-  if (code == LV_EVENT_VALUE_CHANGED) {
-    auto state = lv_obj_has_state(obj, LV_STATE_CHECKED);
-    state_wled_power_on = state;
-  }
+  auto state = lv_obj_has_state(obj, LV_STATE_CHECKED);
+  state_wled_power_on = state;
+}
+
+void ui_cb_wled_brightness_dec(lv_event_t* e)
+{
+  state_wled_brightness_dec = true;
+}
+
+void ui_cb_wled_brightness_inc(lv_event_t* e)
+{
+  state_wled_brightness_inc = true;
 }
 
 void task_debug_perfmon()
@@ -102,6 +111,18 @@ void task_wled()
     last_power_on = state_wled_power_on;
     return;
   }
+
+  // brightness decrease
+  if (state_wled_brightness_dec) {
+    wled_esp_now_send(wled_esp_now_cmd::BRIGHTNESS_DOWN);
+    state_wled_brightness_dec = false;
+  }
+
+  // brightness increase
+  if (state_wled_brightness_inc) {
+    wled_esp_now_send(wled_esp_now_cmd::BRIGHTNESS_UP);
+    state_wled_brightness_inc = false;
+  }
 }
 
 void setup()
@@ -130,10 +151,10 @@ void setup()
 
   // services
   evloop.onRepeat(Hz(10), task_vesc_poll);
-  evloop.onRepeat(Hz(1), task_wled);
+  evloop.onRepeat(Hz(4), task_wled);
 
   // debug log task
-  evloop.onRepeat(Hz(0.2), task_debug_perfmon);
+  evloop.onRepeat(Hz(0.1), task_debug_perfmon);
 }
 
 void loop()

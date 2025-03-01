@@ -1,7 +1,7 @@
 ui_screen_boot.c
 ui_screen_main.c
 ui_screen_wled_settings.c
-ui_screen_profile_editor.c
+ui_screen_lights_control.c
 ui_theme_manager.c
 ui_themes.c
 ui.c

@@ -87,7 +87,7 @@ uint8_t wled_esp_now_send(wled_esp_now_cmd cmd)
   if (cmd == wled_esp_now_cmd::POWER_ON)
     p.program = 0x91;
 
-  ESP_LOGD(LOG_TAG, "sending packet: %d", cmd);
+  ESP_LOGI(LOG_TAG, "sending packet: %d", cmd);
 
   auto send_error = esp_now_send(
       state_espnow_peer_info.peer_addr,
