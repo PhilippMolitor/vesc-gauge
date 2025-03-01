@@ -5,7 +5,7 @@ static const char* LOG_TAG = "wled_esp_now";
 static bool state_initialized = false;
 static esp_now_peer_info_t state_espnow_peer_info;
 static uint32_t state_packet_sequence = 0;
-static uint8_t state_packet_retries = 0;
+static uint8_t state_packet_retries = 0; // TODO
 static bool state_tx_started = false;
 static bool state_tx_ack = false;
 
@@ -56,16 +56,6 @@ uint8_t wled_esp_now_init(uint8_t channel)
       mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5], channel);
 
   state_initialized = true;
-  return 0;
-}
-
-uint8_t wled_esp_now_deinit()
-{
-  esp_now_deinit();
-  esp_wifi_stop();
-  esp_wifi_deinit();
-
-  state_initialized = false;
   return 0;
 }
 

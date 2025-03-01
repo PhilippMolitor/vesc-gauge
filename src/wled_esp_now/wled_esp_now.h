@@ -40,9 +40,5 @@ enum wled_esp_now_cmd : uint8_t {
 };
 
 uint8_t wled_esp_now_init(uint8_t channel = 1);
-uint8_t wled_esp_now_deinit();
 uint8_t wled_esp_now_mac_get(uint8_t* mac_addr);
 uint8_t wled_esp_now_send(wled_esp_now_cmd cmd);
-// uint8_t wled_esp_now_cmd_preset(uint8_t preset);
-// uint8_t wled_esp_now_cmd_brightness(uint8_t brightness);
-// uint8_t wled_esp_now_cmd_color(uint8_t r, uint8_t g, uint8_t b);

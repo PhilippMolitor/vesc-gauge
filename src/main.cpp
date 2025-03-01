@@ -25,7 +25,6 @@ static EventLoop evloop;
 static ComEVesc vesc(50);
 
 // service state
-static bool state_wled_enabled = false;
 static bool state_wled_power_on = false;
 
 // ui state
@@ -88,21 +87,13 @@ void task_wled()
 {
   static bool initialized = false;
 
-  static bool last_enabled = state_wled_enabled;
   static bool last_power_on = state_wled_power_on;
 
   // initialize esp_now
   if (!initialized) {
     wled_esp_now_mac_get(wled_mac);
     initialized = true;
-
     return;
-  }
-
-  // TODO: deinitialize
-  if (false) {
-    wled_esp_now_deinit();
-    initialized = false;
   }
 
   // switch power
