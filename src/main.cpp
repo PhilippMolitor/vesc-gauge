@@ -12,8 +12,8 @@
 #include "drivers/display/display.h"
 #include "drivers/sdcard/sdcard.h"
 #include "drivers/tca9554pwr/tca9554pwr.h"
-#include "utils/lpfv.h"
 #include "utils/timing.h"
+#include "utils/wmavg.h"
 #include "wled_esp_now/wled_esp_now.h"
 
 using namespace reactesp;
@@ -30,7 +30,7 @@ static bool state_wled_brightness_dec = false;
 static bool state_wled_brightness_inc = false;
 
 // ui state
-static TimeBasedLPF speed;
+static WeightedMovingAverage<1000, 100> speed;
 static uint8_t wled_mac[6] = { 0 };
 
 void ui_cb_wled_switch(lv_event_t* e)
@@ -78,7 +78,7 @@ void task_vesc_poll()
 void task_ui_data_refresh()
 {
   // gauge
-  auto speed_value = speed.value();
+  auto speed_value = speed.filteredValue();
   char speed_str[10];
   snprintf(speed_str, sizeof(speed_str), "%.0f", speed_value);
 
