@@ -11,7 +11,8 @@
 #include "drivers/display/display.h"
 #include "drivers/sdcard/sdcard.h"
 #include "drivers/tca9554pwr/tca9554pwr.h"
-#include "utils/timing.h"
+#include "utils/fifo.h"
+#include "utils/macros.h"
 #include "utils/wmavg.h"
 #include "wled_esp_now/wled_esp_now.h"
 
@@ -23,18 +24,26 @@ static constexpr char* LOG_TAG = "main";
 static EventLoop evloop;
 
 // service state
-static bool state_wled_power_on = false;
-static bool state_wled_brightness_dec = false;
-static bool state_wled_brightness_inc = false;
+typedef struct {
+  uint8_t cmd; // 0x00 = wled_esp_now_cmd, 0x01 = set channel
+  uint8_t arg;
+} cmd_ui_wled;
+static FastFIFO<cmd_ui_wled, 4> state_wled_cmd;
 
 // ui state
 static WeightedMovingAverage<1000, 100> speed;
 static uint8_t wled_mac[6] = { 0 };
 
 // ui event hooks
-void ui_cb_wled_switch(lv_event_t* e) { state_wled_power_on = lv_obj_has_state(lv_event_get_target_obj(e), LV_STATE_CHECKED); }
-void ui_cb_wled_brightness_dec(lv_event_t* e) { state_wled_brightness_dec = true; }
-void ui_cb_wled_brightness_inc(lv_event_t* e) { state_wled_brightness_inc = true; }
+void ui_cb_wled_switch(lv_event_t* e)
+{
+  state_wled_cmd.enqueue(
+      (lv_event_get_target_obj(e), LV_STATE_CHECKED)
+          ? (cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::POWER_ON }
+          : (cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::POWER_OFF });
+}
+void ui_cb_wled_brightness_dec(lv_event_t* e) { state_wled_cmd.enqueue((cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::BRIGHTNESS_DOWN }); }
+void ui_cb_wled_brightness_inc(lv_event_t* e) { state_wled_cmd.enqueue((cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::BRIGHTNESS_UP }); }
 
 void task_debug_perfmon()
 {
@@ -63,51 +72,61 @@ void task_vesc_poll()
 
 void task_ui_data_refresh()
 {
+  // ui data cache
+  static float cache_speed = 0;
+
   // gauge
-  auto speed_value = speed.filteredValue();
-  char speed_str[10];
-  snprintf(speed_str, sizeof(speed_str), "%.0f", speed_value);
-
-  lv_label_set_text(ui_main_label_speed_value, speed_str);
-
-  // wled
-  lv_label_set_text(ui_wled_settings_label_status, state_wled_power_on ? "active" : "inactive");
-  char wled_mac_str[23];
-  snprintf(wled_mac_str, sizeof(wled_mac_str), "MAC: %02X:%02X:%02X:%02X:%02X:%02X",
-      wled_mac[0], wled_mac[1], wled_mac[2], wled_mac[3], wled_mac[4], wled_mac[5]);
-  lv_label_set_text(ui_wled_settings_label_macaddr, wled_mac_str);
+  auto fresh_speed = speed.filteredValue();
+  if (!FLOAT_COMPARE(fresh_speed, cache_speed)) {
+    // update cache
+    cache_speed = fresh_speed;
+    // update UI
+    char speed_str[10];
+    snprintf(speed_str, sizeof(speed_str), "%.0f", fresh_speed);
+    lv_label_set_text(ui_main_label_speed_value, speed_str);
+  }
 }
 
 void task_wled()
 {
   static bool initialized = false;
 
-  static bool last_power_on = state_wled_power_on;
-
-  // initialize esp_now
   if (!initialized) {
-    wled_esp_now_mac_get(wled_mac);
+    // set esp-now mac address in UI
+    char wled_mac_str[23];
+    snprintf(wled_mac_str, sizeof(wled_mac_str), "MAC: %02X:%02X:%02X:%02X:%02X:%02X",
+        wled_mac[0], wled_mac[1], wled_mac[2], wled_mac[3], wled_mac[4], wled_mac[5]);
+    lv_label_set_text(ui_wled_settings_label_macaddr, wled_mac_str);
+
     initialized = true;
+  }
+
+  cmd_ui_wled cmd;
+  if (!state_wled_cmd.dequeue(&cmd))
     return;
-  }
 
-  // switch power
-  if (last_power_on != state_wled_power_on) {
-    wled_esp_now_send(state_wled_power_on ? wled_esp_now_cmd::POWER_ON : wled_esp_now_cmd::POWER_OFF);
-    last_power_on = state_wled_power_on;
-    return;
-  }
+  switch (cmd.cmd) {
+  case 0x00:
+    switch (cmd.arg) {
+    case wled_esp_now_cmd::POWER_ON:
+      lv_label_set_text(ui_wled_settings_label_status, "on");
+      break;
+    case wled_esp_now_cmd::POWER_OFF:
+      lv_label_set_text(ui_wled_settings_label_status, "off");
+      break;
+    case wled_esp_now_cmd::BRIGHTNESS_DOWN:
+    case wled_esp_now_cmd::BRIGHTNESS_UP:
+      break;
+    };
+    wled_esp_now_send(static_cast<wled_esp_now_cmd>(cmd.arg));
+    break;
 
-  // brightness decrease
-  if (state_wled_brightness_dec) {
-    wled_esp_now_send(wled_esp_now_cmd::BRIGHTNESS_DOWN);
-    state_wled_brightness_dec = false;
-  }
+  case 0x01:
+    wled_esp_now_channel_set(cmd.arg);
+    break;
 
-  // brightness increase
-  if (state_wled_brightness_inc) {
-    wled_esp_now_send(wled_esp_now_cmd::BRIGHTNESS_UP);
-    state_wled_brightness_inc = false;
+  default:
+    break;
   }
 }
 
