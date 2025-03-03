@@ -4,7 +4,6 @@
 
 #include <Arduino.h>
 
-#include <ComEVesc.h>
 #include <ReactESP.h>
 
 #include <ui.h>
@@ -22,7 +21,6 @@ static constexpr char* LOG_TAG = "main";
 
 // handles
 static EventLoop evloop;
-static ComEVesc vesc(50);
 
 // service state
 static bool state_wled_power_on = false;
@@ -33,22 +31,10 @@ static bool state_wled_brightness_inc = false;
 static WeightedMovingAverage<1000, 100> speed;
 static uint8_t wled_mac[6] = { 0 };
 
-void ui_cb_wled_switch(lv_event_t* e)
-{
-  lv_obj_t* obj = lv_event_get_target_obj(e);
-  auto state = lv_obj_has_state(obj, LV_STATE_CHECKED);
-  state_wled_power_on = state;
-}
-
-void ui_cb_wled_brightness_dec(lv_event_t* e)
-{
-  state_wled_brightness_dec = true;
-}
-
-void ui_cb_wled_brightness_inc(lv_event_t* e)
-{
-  state_wled_brightness_inc = true;
-}
+// ui event hooks
+void ui_cb_wled_switch(lv_event_t* e) { state_wled_power_on = lv_obj_has_state(lv_event_get_target_obj(e), LV_STATE_CHECKED); }
+void ui_cb_wled_brightness_dec(lv_event_t* e) { state_wled_brightness_dec = true; }
+void ui_cb_wled_brightness_inc(lv_event_t* e) { state_wled_brightness_inc = true; }
 
 void task_debug_perfmon()
 {
@@ -137,13 +123,12 @@ void setup()
 
   // important: this must be done before initializing the display,
   // otherwise the microcontroller will crash.
-  wled_esp_now_init(1);
+  wled_esp_now_init();
 
   display_init();
   ui_init();
 
   Serial.begin(115200);
-  vesc.setSerialPort(&Serial);
 
   // system
   evloop.onRepeat(Hz(250), lv_task_handler);
