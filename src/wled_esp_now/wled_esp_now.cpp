@@ -93,17 +93,18 @@ uint8_t wled_esp_now_channel_set(uint8_t channel)
     return 1;
   }
 
-  if (channel < WLED_ESP_NOW_CHANNEL_MIN || channel > WLED_ESP_NOW_CHANNEL_MAX) {
+  if (channel < WLED_ESP_NOW_CHANNEL_MIN - 1 || channel > WLED_ESP_NOW_CHANNEL_MAX) {
     ESP_LOGE(LOG_TAG, "invalid channel: %d", channel);
     return 2;
   }
 
   state_espnow_peer_info.channel = channel;
-  ESP_RETURN_ON_ERROR(
-      esp_wifi_set_channel(state_espnow_peer_info.channel, WIFI_SECOND_CHAN_NONE),
-      LOG_TAG,
-      "failed to set wifi channel to %d",
-      state_espnow_peer_info.channel);
+  if (channel > 0)
+    ESP_RETURN_ON_ERROR(
+        esp_wifi_set_channel(state_espnow_peer_info.channel, WIFI_SECOND_CHAN_NONE),
+        LOG_TAG,
+        "failed to set wifi channel to %d",
+        state_espnow_peer_info.channel);
   return 0;
 }
 
