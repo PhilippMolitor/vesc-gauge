@@ -14,3 +14,8 @@ void ui_cb_wled_brightness_inc(lv_event_t * e)
 {
 	// Your code here
 }
+
+void ui_cb_wled_brightness_dec(lv_event_t * e)
+{
+	// Your code here
+}

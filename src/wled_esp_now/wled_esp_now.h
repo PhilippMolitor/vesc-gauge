@@ -10,7 +10,8 @@
 
 #define WLED_ESP_NOW_CHANNEL_MIN (1u)
 #define WLED_ESP_NOW_CHANNEL_MAX (14u)
-#define WLED_ESP_NOW_TX_TIMEOUT (10u)
+#define WLED_ESP_NOW_TX_REPEATS (3u)
+#define WLED_ESP_NOW_TX_TIMEOUT (10000u) // 10000uS = 10ms
 
 static constexpr uint8_t wled_broadcast_addr[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
@@ -31,14 +32,15 @@ enum wled_esp_now_cmd : uint8_t {
   POWER_ON = 1,
   POWER_OFF = 2,
   NIGHT = 3,
-  BRIGHTNESS_UP = 8,
-  BRIGHTNESS_DOWN = 9,
+  BRIGHTNESS_DOWN = 8,
+  BRIGHTNESS_UP = 9,
   PRESET_1 = 16,
   PRESET_2 = 17,
   PRESET_3 = 18,
   PRESET_4 = 19,
 };
 
-uint8_t wled_esp_now_init(uint8_t channel = 1);
+uint8_t wled_esp_now_init();
+uint8_t wled_esp_now_channel_set(uint8_t channel);
 uint8_t wled_esp_now_mac_get(uint8_t* mac_addr);
 uint8_t wled_esp_now_send(wled_esp_now_cmd cmd);

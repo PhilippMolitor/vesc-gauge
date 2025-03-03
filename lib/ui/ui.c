@@ -109,7 +109,7 @@ void ui_event_wled_settings_button_brightness_dec( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);
 
 if ( event_code == LV_EVENT_CLICKED) {
-      ui_cb_wled_brightness_inc( e );
+      ui_cb_wled_brightness_dec( e );
 }
 }
 
