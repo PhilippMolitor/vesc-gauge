@@ -23,6 +23,9 @@
   "17": { "label": "Preset 2", "cmd": { "ps" :2 } },
   "18": { "label": "Preset 3", "cmd": { "ps": 3 } },
   "19": { "label": "Preset 4", "cmd": { "ps": 4 } },
+
+  "4": { "label": "Power toggle", "cmd": { "on": "t" } },
+
   "20": { "label": "Preset 5", "cmd": { "ps": 5 } },
   "21": { "label": "Preset 6", "cmd": { "ps": 6 } },
   "22": { "label": "Preset 7", "cmd": { "ps": 7 } },

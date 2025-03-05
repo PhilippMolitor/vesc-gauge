@@ -28,10 +28,12 @@ enum wled_wizmote_cmd : uint8_t {
   PRESET_4, // ...19
 
   //
-  // extended CMDs - only available with custom remote.json uploaded to WLED
+  // extended commands - only available with custom remote.json uploaded to WLED
   //
 
-  PRESET_5, // Extended offsettable presets (PRESET_1 + offset)
+  POWER_TOGGLE = 4,
+
+  PRESET_5 = 20, // Extended offsettable presets (PRESET_1 + offset)
   PRESET_6, // 21...
   PRESET_7,
   PRESET_8,
