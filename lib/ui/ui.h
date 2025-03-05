@@ -55,12 +55,8 @@ extern lv_obj_t *ui_wled_settings_switch_enable;
 extern lv_obj_t *ui_wled_settings_label_onoff;
 extern lv_obj_t *ui_wled_settings_label_macaddr;
 extern lv_obj_t *ui_wled_settings_label_status;
-void ui_event_wled_settings_button_brightness_dec( lv_event_t * e);
-extern lv_obj_t *ui_wled_settings_button_brightness_dec;
-extern lv_obj_t *ui_wled_settings_label_brightness_dec_minus;
-void ui_event_wled_settings_button_brightness_inc( lv_event_t * e);
-extern lv_obj_t *ui_wled_settings_button_brightness_inc;
-extern lv_obj_t *ui_wled_settings_label_brightness_inc_plus;
+void ui_event_wled_settings_slider_slider_brightness( lv_event_t * e);
+extern lv_obj_t *ui_wled_settings_slider_slider_brightness;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_screen_lights_control

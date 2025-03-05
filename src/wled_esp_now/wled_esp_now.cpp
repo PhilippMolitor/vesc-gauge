@@ -1,6 +1,30 @@
 #include "wled_esp_now.h"
 
+#include <esp_check.h>
+#include <esp_log.h>
+#include <esp_mac.h>
+#include <esp_now.h>
+#include <esp_wifi.h>
+
+#define WLED_ESP_NOW_TX_REPEATS (3u)
+#define WLED_ESP_NOW_TX_TIMEOUT (10000u) // 10000uS = 10ms
+
 static const char* LOG_TAG = "wled_esp_now";
+
+static constexpr uint8_t wled_broadcast_addr[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+typedef struct wled_wizmote_packet {
+  uint8_t program; // 0x91 for ON button, 0x81 for all others
+  uint8_t seq[4]; // Incremetal sequence number 32 bit unsigned integer LSB first
+  uint8_t dt1 = 0x32; // Button Data Type (0x32)
+  uint8_t button; // Identifies which button is being pressed
+  uint8_t dt2 = 0x01; // Battery Level Data Type (0x01)
+  uint8_t batLevel = 90; // Battery Level 0-100
+  uint8_t byte10; // Unknown, maybe checksum
+  uint8_t byte11; // Unknown, maybe checksum
+  uint8_t byte12; // Unknown, maybe checksum
+  uint8_t byte13; // Unknown, maybe checksum
+} wled_wizmote_packet;
 
 static bool state_initialized = false;
 static esp_now_peer_info_t state_espnow_peer_info;
@@ -13,16 +37,13 @@ static void wled_tx_cb(const uint8_t* mac_addr, esp_now_send_status_t status)
   state_tx_ack = true;
 }
 
-static void wled_esp_now_send_packet(const wled_esp_now_packet* p)
+static void wled_esp_now_send_packet_repeat(const uint8_t* packet, size_t len)
 {
   // repeatedly send packet for reliability
   for (uint8_t r = 0; r < WLED_ESP_NOW_TX_REPEATS; r++) {
     state_tx_ack = false;
 
-    auto send_error = esp_now_send(
-        state_espnow_peer_info.peer_addr,
-        reinterpret_cast<const uint8_t*>(p),
-        sizeof(*p));
+    auto send_error = esp_now_send(state_espnow_peer_info.peer_addr, packet, len);
 
     if (send_error != ESP_OK) {
       ESP_LOGE(LOG_TAG, "failed to send message (repeat %d): error %d", r, send_error);
@@ -44,6 +65,28 @@ static void wled_esp_now_send_packet(const wled_esp_now_packet* p)
     delayMicroseconds(50);
 #endif
   }
+}
+
+static uint8_t wled_esp_now_send_packet(const uint8_t* packet, size_t len)
+{
+  // if a channel is set, only send to that channel
+  if (state_espnow_peer_info.channel != 0) {
+    wled_esp_now_send_packet_repeat(packet, len);
+    return 0;
+  }
+
+  // for each wifi channel
+  for (uint8_t c = WLED_ESP_NOW_CHANNEL_MIN; c <= WLED_ESP_NOW_CHANNEL_MAX; c++) {
+    ESP_RETURN_ON_ERROR(
+        esp_wifi_set_channel(c, WIFI_SECOND_CHAN_NONE),
+        LOG_TAG,
+        "failed to set wifi channel to %d",
+        c);
+
+    wled_esp_now_send_packet_repeat(packet, len);
+  }
+
+  return 0;
 }
 
 uint8_t wled_esp_now_init()
@@ -86,7 +129,7 @@ uint8_t wled_esp_now_init()
   return 0;
 }
 
-uint8_t wled_esp_now_channel_set(uint8_t channel)
+uint8_t wled_esp_now_channel_set(const uint8_t channel)
 {
   if (!state_initialized) {
     ESP_LOGE(LOG_TAG, "not initialized");
@@ -114,7 +157,7 @@ uint8_t wled_esp_now_mac_get(uint8_t* mac_addr)
   return 0;
 }
 
-uint8_t wled_esp_now_send(wled_esp_now_cmd cmd)
+uint8_t wled_esp_now_wizmote_cmd(wled_wizmote_cmd cmd)
 {
 
   if (!state_initialized) {
@@ -125,32 +168,17 @@ uint8_t wled_esp_now_send(wled_esp_now_cmd cmd)
   static uint32_t seq = 0;
   seq++;
 
-  wled_esp_now_packet p;
+  wled_wizmote_packet p;
   p.seq[0] = byte(seq);
   p.seq[1] = byte(seq >> 8);
   p.seq[2] = byte(seq >> 16);
   p.seq[3] = byte(seq >> 24);
   p.button = cmd;
-  p.program = cmd == wled_esp_now_cmd::POWER_ON ? 0x91 : 0x81;
+  p.program = cmd == wled_wizmote_cmd::POWER_ON ? 0x91 : 0x81;
 
-  ESP_LOGI(LOG_TAG, "sending packet: %d (seq %d)", p.button, seq);
+  ESP_LOGI(LOG_TAG, "sending wizmote packet: %d (seq %d)", p.button, seq);
 
-  // if a channel is set, only send to that channel
-  if (state_espnow_peer_info.channel != 0) {
-    wled_esp_now_send_packet(&p);
-    return 0;
-  }
-
-  // for each wifi channel
-  for (uint8_t c = WLED_ESP_NOW_CHANNEL_MIN; c <= WLED_ESP_NOW_CHANNEL_MAX; c++) {
-    ESP_RETURN_ON_ERROR(
-        esp_wifi_set_channel(c, WIFI_SECOND_CHAN_NONE),
-        LOG_TAG,
-        "failed to set wifi channel to %d",
-        c);
-
-    wled_esp_now_send_packet(&p);
-  }
+  wled_esp_now_send_packet(reinterpret_cast<uint8_t*>(&p), sizeof(p));
 
   return 0;
 }

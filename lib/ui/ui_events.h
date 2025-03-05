@@ -11,8 +11,7 @@ extern "C" {
 #endif
 
 void ui_cb_wled_switch(lv_event_t * e);
-void ui_cb_wled_brightness_dec(lv_event_t * e);
-void ui_cb_wled_brightness_inc(lv_event_t * e);
+void ui_cb_wled_brightness_set(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

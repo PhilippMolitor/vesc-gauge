@@ -2,6 +2,13 @@
 
 #include <esp_log.h>
 
+#include <Arduino.h>
+
+#include <FS.h>
+#include <SD_MMC.h>
+
+#include "../tca9554pwr/tca9554.h"
+
 static const char* LOG_TAG = "sdcard";
 
 static void sdcard_cs_set(uint8_t state)

@@ -9,6 +9,7 @@ void ui_screen_boot_screen_init(void)
 {
 ui_screen_boot = lv_obj_create(NULL);
 lv_obj_remove_flag( ui_screen_boot, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+lv_obj_add_event_cb(ui_screen_boot, scr_unloaded_delete_cb, LV_EVENT_SCREEN_UNLOADED, &ui_screen_boot);
 
 ui_boot_label_booting = lv_label_create(ui_screen_boot);
 lv_obj_set_width( ui_boot_label_booting, 320);

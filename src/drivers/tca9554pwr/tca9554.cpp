@@ -1,4 +1,10 @@
-#include "tca9554pwr.h"
+#include "tca9554.h"
+
+#include <esp_log.h>
+
+#include <Wire.h>
+
+#include "../../utils/i2c.h"
 
 static const char* LOG_TAG = "io_expander";
 

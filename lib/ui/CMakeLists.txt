@@ -7,7 +7,6 @@ SET(SOURCES ui_screen_boot.c
     ui.c
     ui_comp_hook.c
     ui_helpers.c
-    ui_events.c
     fonts/ui_font_font_speed_136pt.c
     fonts/ui_font_font_speed_48pt.c)
 

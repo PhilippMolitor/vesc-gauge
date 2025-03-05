@@ -39,12 +39,8 @@ lv_obj_t *ui_wled_settings_switch_enable;
 lv_obj_t *ui_wled_settings_label_onoff;
 lv_obj_t *ui_wled_settings_label_macaddr;
 lv_obj_t *ui_wled_settings_label_status;
-void ui_event_wled_settings_button_brightness_dec( lv_event_t * e);
-lv_obj_t *ui_wled_settings_button_brightness_dec;
-lv_obj_t *ui_wled_settings_label_brightness_dec_minus;
-void ui_event_wled_settings_button_brightness_inc( lv_event_t * e);
-lv_obj_t *ui_wled_settings_button_brightness_inc;
-lv_obj_t *ui_wled_settings_label_brightness_inc_plus;
+void ui_event_wled_settings_slider_slider_brightness( lv_event_t * e);
+lv_obj_t *ui_wled_settings_slider_slider_brightness;
 // CUSTOM VARIABLES
 
 
@@ -98,26 +94,24 @@ lv_indev_wait_release(lv_indev_active());
 }
 
 void ui_event_wled_settings_switch_enable( lv_event_t * e) {
-    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
 
 if ( event_code == LV_EVENT_VALUE_CHANGED) {
       ui_cb_wled_switch( e );
 }
+if ( event_code == LV_EVENT_VALUE_CHANGED &&  lv_obj_has_state(target,LV_STATE_CHECKED)  ) {
+      _ui_label_set_property(ui_wled_settings_label_status, _UI_LABEL_PROPERTY_TEXT, "on");
+}
+if ( event_code == LV_EVENT_VALUE_CHANGED &&  !lv_obj_has_state(target,LV_STATE_CHECKED)  ) {
+      _ui_label_set_property(ui_wled_settings_label_status, _UI_LABEL_PROPERTY_TEXT, "off");
+}
 }
 
-void ui_event_wled_settings_button_brightness_dec( lv_event_t * e) {
+void ui_event_wled_settings_slider_slider_brightness( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);
 
-if ( event_code == LV_EVENT_CLICKED) {
-      ui_cb_wled_brightness_dec( e );
-}
-}
-
-void ui_event_wled_settings_button_brightness_inc( lv_event_t * e) {
-    lv_event_code_t event_code = lv_event_get_code(e);
-
-if ( event_code == LV_EVENT_CLICKED) {
-      ui_cb_wled_brightness_inc( e );
+if ( event_code == LV_EVENT_VALUE_CHANGED) {
+      ui_cb_wled_brightness_set( e );
 }
 }
 

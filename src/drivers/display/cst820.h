@@ -1,20 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
-
-#include "../../utils/i2c.h"
-#include "../tca9554pwr/tca9554pwr.h"
-
-#define CST820_ADDR (0x15)
-
-#define CST820_REG_MODE 0x00
-#define CST820_REG_GESTURE_ID 0x01
-#define CST820_REG_VERSION 0x15
-#define CST820_REG_CHIPID 0xA7
-#define CST820_REG_PROJID 0xA8
-#define CST820_REG_FW_VERSION 0xA9
-#define CST820_REG_AUTOSLEEP_TIME 0xF9
-#define CST820_REG_AUTOSLEEP_DISABLE 0xFE
+#include <inttypes.h>
 
 #define CST820_LCD_TOUCH_MAX_POINTS (1)
 

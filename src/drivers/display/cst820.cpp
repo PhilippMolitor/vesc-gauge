@@ -1,5 +1,21 @@
 #include "cst820.h"
 
+#include <Arduino.h>
+
+#include "../../utils/i2c.h"
+#include "../tca9554pwr/tca9554.h"
+
+#define CST820_ADDR (0x15)
+
+#define CST820_REG_MODE 0x00
+#define CST820_REG_GESTURE_ID 0x01
+#define CST820_REG_VERSION 0x15
+#define CST820_REG_CHIPID 0xA7
+#define CST820_REG_PROJID 0xA8
+#define CST820_REG_FW_VERSION 0xA9
+#define CST820_REG_AUTOSLEEP_TIME 0xF9
+#define CST820_REG_AUTOSLEEP_DISABLE 0xFE
+
 static bool cst820_reset(void)
 {
   tca9554pwr_write(PIN_TCA9554PWR_TOUCH_RESET, LOW);

@@ -1,5 +1,7 @@
 #include "i2c.h"
 
+#include <Wire.h>
+
 bool i2c_read(uint8_t addr, uint8_t reg, uint8_t* data, uint32_t len)
 {
   Wire.beginTransmission(addr);

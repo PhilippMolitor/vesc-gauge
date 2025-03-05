@@ -1,12 +1,6 @@
 #pragma once
 
-#include <stdio.h>
-
-#include <esp_log.h>
-
-#include <Wire.h>
-
-#include "../../utils/i2c.h"
+#include <inttypes.h>
 
 #define TCA9554PWR_ADDRESS (0x20)
 

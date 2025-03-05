@@ -1,5 +1,28 @@
 #include "st7701.h"
 
+#include <driver/gpio.h>
+#include <driver/spi_master.h>
+
+#include <esp_lcd_panel_io.h>
+#include <esp_lcd_panel_ops.h>
+#include <esp_lcd_panel_rgb.h>
+
+#include <Arduino.h>
+
+#include "../tca9554pwr/tca9554.h"
+
+#define ST7701_LCD_DATA_WIDTH (16)
+#define ST7701_LCD_TIMING_FREQ_HZ (16 * 1000 * 1000)
+#define ST7701_LCD_TIMING_HPW (8)
+#define ST7701_LCD_TIMING_HBP (10)
+#define ST7701_LCD_TIMING_HFP (50)
+#define ST7701_LCD_TIMING_VPW (3)
+#define ST7701_LCD_TIMING_VBP (8)
+#define ST7701_LCD_TIMING_VFP (8)
+#define ST7701_BACKLIGHT_PWM_CHANNEL (1)
+#define ST7701_BACKLIGHT_PWM_FREQ (20000)
+#define ST7701_BACKLIGHT_PWM_RES (10)
+
 static spi_device_handle_t spi = NULL;
 static esp_lcd_panel_handle_t panel = NULL;
 

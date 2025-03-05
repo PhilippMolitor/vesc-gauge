@@ -3,6 +3,7 @@
 #include <esp_log.h>
 
 #include <Arduino.h>
+#include <Wire.h>
 
 #include <ReactESP.h>
 
@@ -10,7 +11,7 @@
 
 #include "drivers/display/display.h"
 #include "drivers/sdcard/sdcard.h"
-#include "drivers/tca9554pwr/tca9554pwr.h"
+#include "drivers/tca9554pwr/tca9554.h"
 #include "utils/fifo.h"
 #include "utils/macros.h"
 #include "utils/wmavg.h"
@@ -24,41 +25,36 @@ static constexpr char* LOG_TAG = "main";
 static EventLoop evloop;
 
 // service state
-typedef struct {
-  uint8_t cmd; // 0x00 = wled_esp_now_cmd, 0x01 = set channel
-  uint8_t arg;
-} cmd_ui_wled;
-static FastFIFO<cmd_ui_wled, 4> state_wled_cmd;
+static FastFIFO<wled_wizmote_cmd, 16> state_wled_cmd;
 
 // ui state
 static WeightedMovingAverage<1000, 100> speed;
-static uint8_t wled_mac[6] = { 0 };
 
 // ui event hooks
 void ui_cb_wled_switch(lv_event_t* e)
 {
   state_wled_cmd.enqueue(
-      (lv_event_get_target_obj(e), LV_STATE_CHECKED)
-          ? (cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::POWER_ON }
-          : (cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::POWER_OFF });
+      lv_obj_has_state(lv_event_get_target_obj(e), LV_STATE_CHECKED)
+          ? wled_wizmote_cmd::POWER_ON
+          : wled_wizmote_cmd::POWER_OFF);
 }
-void ui_cb_wled_brightness_dec(lv_event_t* e) { state_wled_cmd.enqueue((cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::BRIGHTNESS_DOWN }); }
-void ui_cb_wled_brightness_inc(lv_event_t* e) { state_wled_cmd.enqueue((cmd_ui_wled) { .cmd = 0, .arg = wled_esp_now_cmd::BRIGHTNESS_UP }); }
 
-void task_debug_perfmon()
+void ui_cb_wled_brightness_set(lv_event_t* e)
 {
-  ESP_LOGD(LOG_TAG, "heap: %.1fkB free of %.1fkB",
-      ESP.getFreeHeap() / 1024.0,
-      ESP.getHeapSize() / 1024.0);
-  ESP_LOGD(LOG_TAG, "psram: %.1fkB free of %.1fkB",
-      ESP.getFreePsram() / 1024.0,
-      ESP.getPsramSize() / 1024.0);
+  auto obj = lv_event_get_target_obj(e);
+  auto value = lv_slider_get_value(obj);
+  auto min = lv_slider_get_min_value(obj);
+  auto max = lv_slider_get_max_value(obj);
+
+  uint8_t offset = map(value, min, max, 0, WLED_ESP_NOW_COUNT_BRIGHTNESS - 1);
+  state_wled_cmd.enqueue(static_cast<wled_wizmote_cmd>(wled_wizmote_cmd::BRIGHTNESS_1 + offset));
 }
+
+// tasks
 
 void task_vesc_poll()
 {
-  // TODO: enable
-  // vesc.getVescValues();
+  // TODO: poll actual VESC data
 
   static uint32_t startTime = millis();
   uint32_t currentTime = millis();
@@ -70,14 +66,14 @@ void task_vesc_poll()
   speed.update(value);
 }
 
-void task_ui_data_refresh()
+void task_vesc_uidata()
 {
   // ui data cache
   static float cache_speed = 0;
 
   // gauge
   auto fresh_speed = speed.filteredValue();
-  if (!FLOAT_COMPARE(fresh_speed, cache_speed)) {
+  if (!FLOAT_COMPARE_E(fresh_speed, cache_speed, 0.4)) {
     // update cache
     cache_speed = fresh_speed;
     // update UI
@@ -93,6 +89,8 @@ void task_wled()
 
   if (!initialized) {
     // set esp-now mac address in UI
+    uint8_t wled_mac[6];
+    wled_esp_now_mac_get(wled_mac);
     char wled_mac_str[23];
     snprintf(wled_mac_str, sizeof(wled_mac_str), "MAC: %02X:%02X:%02X:%02X:%02X:%02X",
         wled_mac[0], wled_mac[1], wled_mac[2], wled_mac[3], wled_mac[4], wled_mac[5]);
@@ -101,39 +99,26 @@ void task_wled()
     initialized = true;
   }
 
-  cmd_ui_wled cmd;
-  if (!state_wled_cmd.dequeue(&cmd))
-    return;
+  wled_wizmote_cmd cmd;
+  if (state_wled_cmd.dequeue(&cmd))
+    wled_esp_now_wizmote_cmd(static_cast<wled_wizmote_cmd>(cmd));
+}
 
-  switch (cmd.cmd) {
-  case 0x00:
-    switch (cmd.arg) {
-    case wled_esp_now_cmd::POWER_ON:
-      lv_label_set_text(ui_wled_settings_label_status, "on");
-      break;
-    case wled_esp_now_cmd::POWER_OFF:
-      lv_label_set_text(ui_wled_settings_label_status, "off");
-      break;
-    case wled_esp_now_cmd::BRIGHTNESS_DOWN:
-    case wled_esp_now_cmd::BRIGHTNESS_UP:
-      break;
-    };
-    wled_esp_now_send(static_cast<wled_esp_now_cmd>(cmd.arg));
-    break;
-
-  case 0x01:
-    wled_esp_now_channel_set(cmd.arg);
-    break;
-
-  default:
-    break;
-  }
+void task_debug_perfmon()
+{
+  ESP_LOGD(LOG_TAG, "heap: %.1fkB free of %.1fkB",
+      ESP.getFreeHeap() / 1024.0,
+      ESP.getHeapSize() / 1024.0);
+  ESP_LOGD(LOG_TAG, "psram: %.1fkB free of %.1fkB",
+      ESP.getFreePsram() / 1024.0,
+      ESP.getPsramSize() / 1024.0);
 }
 
 void setup()
 {
   analogReadResolution(ANALOG_READ_RESOLUTION);
   Wire.begin(SDA, SCL);
+  Serial.begin(115200);
 
   // IO expander
   tca9554pwr_init(0x00);
@@ -147,17 +132,13 @@ void setup()
   display_init();
   ui_init();
 
-  Serial.begin(115200);
-
-  // system
+  // tasks
   evloop.onRepeat(Hz(250), lv_task_handler);
-  evloop.onRepeat(Hz(16), task_ui_data_refresh);
-
-  // services
   evloop.onRepeat(Hz(10), task_vesc_poll);
-  evloop.onRepeat(Hz(4), task_wled);
+  evloop.onRepeat(Hz(16), task_vesc_uidata);
+  evloop.onRepeat(Hz(8), task_wled);
 
-  // debug log task
+  // debugging
   evloop.onRepeat(Hz(0.1), task_debug_perfmon);
 }
 

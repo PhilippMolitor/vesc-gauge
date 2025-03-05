@@ -1,0 +1,49 @@
+{
+  "_comment": "Key definitions for WiZmote with extensions for VESCGauge via ESP-NOW.",
+  "remote": "VESCGauge",
+
+  "1": { "label": "On", "cmd": { "on": true } },
+  "2": { "label": "Off", "cmd": { "on": false } },
+  "100": { "label": "Smart on", "cmd": { "on": true } },
+  "101": { "label": "Smart off", "cmd": { "on": false } },
+
+  "8": { "label": "Brightness down", "cmd": { "bri": "~-25" } },
+  "9": { "label": "Brightness up", "cmd": { "bri": "~25" } },
+  "102": { "label": "Smart Brightness up", "cmd": {"bri": "~25" } },
+  "103": { "label": "Smart Brightness down", "cmd": {"bri": "~-25" } },
+
+  "3": { 
+    "label": "Night light", 
+    "cmd": {
+      "nl": { "on": true, "dur": 10, "mode":2, "tbri":5 }
+    }
+  },
+
+  "16": { "label": "Preset 1", "cmd": { "ps": 1 } },
+  "17": { "label": "Preset 2", "cmd": { "ps" :2 } },
+  "18": { "label": "Preset 3", "cmd": { "ps": 3 } },
+  "19": { "label": "Preset 4", "cmd": { "ps": 4 } },
+  "20": { "label": "Preset 5", "cmd": { "ps": 5 } },
+  "21": { "label": "Preset 6", "cmd": { "ps": 6 } },
+  "22": { "label": "Preset 7", "cmd": { "ps": 7 } },
+  "23": { "label": "Preset 8", "cmd": { "ps": 8 } },
+  "24": { "label": "Preset 9", "cmd": { "ps": 9 } },
+  "25": { "label": "Preset 10", "cmd": { "ps": 10} },
+  "26": { "label": "Preset 11", "cmd": { "ps": 11} },
+  "27": { "label": "Preset 12", "cmd": { "ps": 12} },
+  "28": { "label": "Preset 13", "cmd": { "ps": 13} },
+  "29": { "label": "Preset 14", "cmd": { "ps": 14} },
+  "30": { "label": "Preset 15", "cmd": { "ps": 15} },
+  "31": { "label": "Preset 16", "cmd": { "ps": 16} },
+
+  "64": { "label": "Brightness 1", "cmd": { "bri": 5 } },
+  "65": { "label": "Brightness 2", "cmd": { "bri": 33 } },
+  "66": { "label": "Brightness 3", "cmd": { "bri": 61 } },
+  "67": { "label": "Brightness 4", "cmd": { "bri": 88 } },
+  "68": { "label": "Brightness 5", "cmd": { "bri": 116 } },
+  "69": { "label": "Brightness 6", "cmd": { "bri": 144 } },
+  "70": { "label": "Brightness 7", "cmd": { "bri": 172 } },
+  "71": { "label": "Brightness 8", "cmd": { "bri": 199 } },
+  "72": { "label": "Brightness 9", "cmd": { "bri": 227 } },
+  "73": { "label": "Brightness 10", "cmd": { "bri": 255 } }
+}

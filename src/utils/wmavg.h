@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
+#include <inttypes.h>
 
 template <size_t window_ms, size_t dt_ms>
 class WeightedMovingAverage {

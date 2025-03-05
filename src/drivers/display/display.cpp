@@ -1,5 +1,14 @@
 #include "display.h"
 
+#include <Arduino.h>
+
+#include <esp_heap_caps.h>
+
+#include "cst820.h"
+#include "st7701.h"
+
+#define FB_SIZE_PX (ST7701_WIDTH * ST7701_HEIGHT / 10)
+
 static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
 static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_PX*(ST7701_LCD_PIXEL_BITS / 8), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
 
@@ -32,7 +41,7 @@ void display_init(void)
   cst820_init();
 
   lv_init();
-  lv_tick_set_cb(xTaskGetTickCount); // lvgl tick
+  lv_tick_set_cb(millis); // lvgl tick
 
   // initialize display/buffer
   lv_display_t* display = lv_display_create(ST7701_WIDTH, ST7701_HEIGHT);
