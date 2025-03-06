@@ -133,7 +133,7 @@ void setup()
   ui_init();
 
   // tasks
-  evloop.onRepeat(Hz(250), lv_task_handler);
+  evloop.onRepeat(Hz(200), lv_task_handler);
   evloop.onRepeat(Hz(10), task_vesc_poll);
   evloop.onRepeat(Hz(16), task_vesc_uidata);
   evloop.onRepeat(Hz(8), task_wled);

@@ -177,7 +177,7 @@ static void st7701_initialize_driver()
   st7701_cs_disable();
 }
 
-void st7701_initialize_panel(void* buf_a, void* buf_b)
+void st7701_initialize_panel()
 {
   //  RGB
   esp_lcd_rgb_panel_config_t rgb_config = {
@@ -202,9 +202,9 @@ void st7701_initialize_panel(void* buf_a, void* buf_b)
     },
     .data_width = ST7701_LCD_DATA_WIDTH,
     .bits_per_pixel = ST7701_LCD_PIXEL_BITS,
-    .num_fbs = 2,
-    .bounce_buffer_size_px = ST7701_WIDTH * 10,
-    .psram_trans_align = 64,
+    .bounce_buffer_size_px = ST7701_WIDTH * 20,
+    .sram_trans_align = 32,
+    .psram_trans_align = 32,
     .hsync_gpio_num = PIN_LCD_RGB_HSYNC,
     .vsync_gpio_num = PIN_LCD_VSYNC,
     .de_gpio_num = PIN_LCD_DE,
@@ -232,7 +232,7 @@ void st7701_initialize_panel(void* buf_a, void* buf_b)
         .disp_active_low = 0,
         .refresh_on_demand = 0,
         .fb_in_psram = true,
-        .double_fb = true,
+        .double_fb = false,
         .no_fb = 0,
         .bb_invalidate_cache = 0,
     },
@@ -242,11 +242,11 @@ void st7701_initialize_panel(void* buf_a, void* buf_b)
   esp_lcd_panel_init(panel);
 }
 
-void st7701_init(void* buf_a, void* buf_b)
+void st7701_init()
 {
   st7701_reset();
   st7701_initialize_driver();
-  st7701_initialize_panel(buf_a, buf_b);
+  st7701_initialize_panel();
   st7701_backlight_init();
 }
 
