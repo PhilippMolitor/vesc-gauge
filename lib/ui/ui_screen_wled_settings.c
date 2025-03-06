@@ -45,7 +45,7 @@ lv_obj_set_align( ui_wled_settings_label_status, LV_ALIGN_CENTER );
 lv_label_set_text(ui_wled_settings_label_status,"off");
 
 ui_wled_settings_slider_slider_brightness = lv_slider_create(ui_screen_wled_settings);
-lv_slider_set_range(ui_wled_settings_slider_slider_brightness, 0,10);
+lv_slider_set_range(ui_wled_settings_slider_slider_brightness, 0,9);
 lv_slider_set_value( ui_wled_settings_slider_slider_brightness, 0, LV_ANIM_OFF);
 if (lv_slider_get_mode(ui_wled_settings_slider_slider_brightness)==LV_SLIDER_MODE_RANGE ) lv_slider_set_left_value( ui_wled_settings_slider_slider_brightness, 0, LV_ANIM_OFF);
 lv_obj_set_width( ui_wled_settings_slider_slider_brightness, 380);

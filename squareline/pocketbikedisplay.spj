@@ -2360,7 +2360,7 @@
                 "strtype": "SLIDER/Range",
                 "intarray": [
                   0,
-                  10
+                  9
                 ],
                 "InheritedType": 7
               },
@@ -2860,10 +2860,10 @@
     "uiExportFolderPath": "/Users/phil/Projects/Personal/pocketbike-display/lib/ui",
     "projectExportFolderPath": "",
     "custom_variable_prefix": "ui",
-    "backup_cnt": 39,
+    "backup_cnt": 40,
     "autosave_cnt": 0,
     "lvgl_version": "9.1.0",
-    "callfuncsexport": "C_FILE",
+    "callfuncsexport": "DONT_EXPORT",
     "imageexport": "SOURCE",
     "lvgl_include_path": "",
     "drive_stdio": "-",
