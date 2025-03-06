@@ -6,6 +6,7 @@
 #define ST7701_HEIGHT (480)
 #define ST7701_LCD_PIXEL_BITS (16)
 #define ST7701_BACKLIGHT_MAX (100)
+#define ST7701_BOUNCE_BUFFER_SIZE (ST7701_WIDTH * 20)
 
 void st7701_init();
 void st7701_draw_rect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t* data);

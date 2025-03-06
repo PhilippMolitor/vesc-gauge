@@ -7,11 +7,11 @@
 #include "cst820.h"
 #include "st7701.h"
 
-#define FB_SIZE_PX (ST7701_WIDTH * ST7701_HEIGHT / 6)
+#define FB_SIZE_PX (ST7701_BOUNCE_BUFFER_SIZE * 4)
 #define FB_SIZE_BYTES (FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8))
 
-static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_BYTES, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(32, FB_SIZE_BYTES, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(16, FB_SIZE_BYTES, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+static lv_color_t* frame_buf_b = (lv_color_t*)heap_caps_aligned_alloc(16, FB_SIZE_BYTES, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL | MALLOC_CAP_CACHE_ALIGNED);
 
 static void display_touchpad_update(lv_indev_t* drv, lv_indev_data_t* data)
 {
