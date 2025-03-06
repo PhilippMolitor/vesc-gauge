@@ -4,7 +4,7 @@
 
 #define CST820_LCD_TOUCH_MAX_POINTS (1)
 
-enum cst820_gesture : uint8_t {
+enum class cst820_gesture : uint8_t {
   NONE = 0x00,
   SWIPE_UP = 0x01,
   SWIPE_DOWN = 0x02,

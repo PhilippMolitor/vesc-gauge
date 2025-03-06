@@ -33,10 +33,8 @@ static void cst820_autosleep_set(bool enable)
   i2c_write(CST820_ADDR, CST820_REG_AUTOSLEEP_DISABLE, &state, 1);
 }
 
-uint8_t cst820_init(void)
+uint8_t cst820_init()
 {
-  pinMode(PIN_TOUCH_INTERRUPT, INPUT_PULLUP);
-
   cst820_reset();
   cst820_autosleep_set(false);
 
@@ -48,22 +46,23 @@ uint8_t cst820_read(cst820_event* data)
   uint8_t buf[6];
   i2c_read(CST820_ADDR, CST820_REG_GESTURE_ID, buf, 6);
 
-  // gesture detected
-  if (buf[0] != 0x00)
-    data->gesture = (cst820_gesture)buf[0];
+  noInterrupts();
+  {
+    // gesture detected
+    if (buf[0] != 0x00) {
+      data->gesture = (cst820_gesture)buf[0];
+    }
 
-  // point touch event
-  if (buf[1] != 0x00) {
-    noInterrupts();
-    data->points = (uint8_t)buf[1];
-    if (data->points > CST820_LCD_TOUCH_MAX_POINTS)
-      data->points = CST820_LCD_TOUCH_MAX_POINTS;
-
-    data->x = ((buf[2] & 0x0F) << 8) + buf[3];
-    data->y = ((buf[4] & 0x0F) << 8) + buf[5];
-
-    interrupts();
+    // point touch event
+    if (buf[1] != 0x00) {
+      data->points = (uint8_t)buf[1];
+      if (data->points < CST820_LCD_TOUCH_MAX_POINTS + 1) {
+        data->x = ((buf[2] & 0x0F) << 8) + buf[3];
+        data->y = ((buf[4] & 0x0F) << 8) + buf[5];
+      }
+    }
   }
+  interrupts();
 
   return true;
 }
