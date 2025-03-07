@@ -39,6 +39,12 @@ void ui_cb_wled_switch(lv_event_t* e)
           : wled_wizmote_cmd::POWER_OFF);
 }
 
+void ui_cb_wled_channel(lv_event_t* e)
+{
+  auto value = lv_dropdown_get_selected(lv_event_get_target_obj(e));
+  wled_esp_now_channel_set(value);
+}
+
 void ui_cb_wled_brightness_set(lv_event_t* e)
 {
   auto obj = lv_event_get_target_obj(e);

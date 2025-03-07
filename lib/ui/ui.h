@@ -57,6 +57,8 @@ extern lv_obj_t *ui_wled_settings_label_macaddr;
 extern lv_obj_t *ui_wled_settings_label_status;
 void ui_event_wled_settings_slider_slider_brightness( lv_event_t * e);
 extern lv_obj_t *ui_wled_settings_slider_slider_brightness;
+void ui_event_wled_settings_dropdown_channel( lv_event_t * e);
+extern lv_obj_t *ui_wled_settings_dropdown_channel;
 // CUSTOM VARIABLES
 
 // SCREEN: ui_screen_lights_control

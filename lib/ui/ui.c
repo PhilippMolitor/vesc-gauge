@@ -41,6 +41,8 @@ lv_obj_t *ui_wled_settings_label_macaddr;
 lv_obj_t *ui_wled_settings_label_status;
 void ui_event_wled_settings_slider_slider_brightness( lv_event_t * e);
 lv_obj_t *ui_wled_settings_slider_slider_brightness;
+void ui_event_wled_settings_dropdown_channel( lv_event_t * e);
+lv_obj_t *ui_wled_settings_dropdown_channel;
 // CUSTOM VARIABLES
 
 
@@ -112,6 +114,14 @@ void ui_event_wled_settings_slider_slider_brightness( lv_event_t * e) {
 
 if ( event_code == LV_EVENT_VALUE_CHANGED) {
       ui_cb_wled_brightness_set( e );
+}
+}
+
+void ui_event_wled_settings_dropdown_channel( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);
+
+if ( event_code == LV_EVENT_VALUE_CHANGED) {
+      ui_cb_wled_channel( e );
 }
 }
 

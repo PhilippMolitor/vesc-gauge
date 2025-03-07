@@ -13,8 +13,8 @@ lv_obj_remove_flag( ui_screen_wled_settings, LV_OBJ_FLAG_SCROLLABLE );    /// Fl
 ui_wled_settings_switch_enable = lv_switch_create(ui_screen_wled_settings);
 lv_obj_set_width( ui_wled_settings_switch_enable, 141);
 lv_obj_set_height( ui_wled_settings_switch_enable, 83);
-lv_obj_set_x( ui_wled_settings_switch_enable, 0 );
-lv_obj_set_y( ui_wled_settings_switch_enable, -31 );
+lv_obj_set_x( ui_wled_settings_switch_enable, 104 );
+lv_obj_set_y( ui_wled_settings_switch_enable, -19 );
 lv_obj_set_align( ui_wled_settings_switch_enable, LV_ALIGN_CENTER );
 
 
@@ -57,8 +57,21 @@ lv_obj_set_align( ui_wled_settings_slider_slider_brightness, LV_ALIGN_CENTER );
 
 //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
 if (lv_obj_get_style_pad_top(ui_wled_settings_slider_slider_brightness,LV_PART_MAIN) > 0) lv_obj_set_style_pad_right( ui_wled_settings_slider_slider_brightness, lv_obj_get_style_pad_right(ui_wled_settings_slider_slider_brightness,LV_PART_MAIN) + 1, LV_PART_MAIN );
+ui_wled_settings_dropdown_channel = lv_dropdown_create(ui_screen_wled_settings);
+lv_dropdown_set_dir( ui_wled_settings_dropdown_channel, LV_DIR_RIGHT);
+lv_dropdown_set_options( ui_wled_settings_dropdown_channel, "All Channels\nChannel 1\nChannel 2\nChannel 3\nChannel 4\nChannel 5\nChannel 6\nChannel 7\nChannel 8\nChannel 9\nChannel 10\nChannel 11\nChannel 12\nChannel 13\nChannel 14" );
+lv_obj_set_width( ui_wled_settings_dropdown_channel, 150);
+lv_obj_set_height( ui_wled_settings_dropdown_channel, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_x( ui_wled_settings_dropdown_channel, -97 );
+lv_obj_set_y( ui_wled_settings_dropdown_channel, -22 );
+lv_obj_set_align( ui_wled_settings_dropdown_channel, LV_ALIGN_CENTER );
+lv_obj_add_flag( ui_wled_settings_dropdown_channel, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+
+
+
 lv_obj_add_event_cb(ui_wled_settings_switch_enable, ui_event_wled_settings_switch_enable, LV_EVENT_ALL, NULL);
 lv_obj_add_event_cb(ui_wled_settings_slider_slider_brightness, ui_event_wled_settings_slider_slider_brightness, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_wled_settings_dropdown_channel, ui_event_wled_settings_dropdown_channel, LV_EVENT_ALL, NULL);
 lv_obj_add_event_cb(ui_screen_wled_settings, ui_event_screen_wled_settings, LV_EVENT_ALL, NULL);
 
 }
