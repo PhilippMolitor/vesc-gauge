@@ -12,7 +12,7 @@ weekday format:
 5 - friday
 6 - saturday
 */
-typedef struct {
+typedef struct datetime_t {
   uint16_t year;
   uint8_t month;
   uint8_t day;

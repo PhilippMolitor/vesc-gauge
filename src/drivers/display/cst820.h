@@ -15,12 +15,12 @@ enum class cst820_gesture : uint8_t {
   LONG_PRESS = 0x0C
 };
 
-struct cst820_event {
+typedef struct cst820_event {
   uint8_t points;
   cst820_gesture gesture;
   uint16_t x;
   uint16_t y;
-};
+} cst820_event;
 
 uint8_t cst820_init();
 uint8_t cst820_read(cst820_event* data);
