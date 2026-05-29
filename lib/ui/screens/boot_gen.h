@@ -1,9 +1,9 @@
 /**
- * @file ui.h
+ * @file boot_gen.h
  */
 
-#ifndef UI_H
-#define UI_H
+#ifndef BOOT_H
+#define BOOT_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,7 +13,17 @@ extern "C" {
  *      INCLUDES
  *********************/
 
-#include "ui_gen.h"
+#ifdef LV_LVGL_H_INCLUDE_SIMPLE
+    #include "lvgl.h"
+    #include "lvgl_private.h"
+#else
+    #include "lvgl/lvgl.h"
+    #include "lvgl/lvgl_private.h"
+#endif
+
+#ifdef LV_USE_XML
+    #include "lv_xml/lv_xml.h"
+#endif
 
 /*********************
  *      DEFINES
@@ -24,17 +34,12 @@ extern "C" {
  **********************/
 
 /**********************
- * GLOBAL VARIABLES
- **********************/
-
-/**********************
  * GLOBAL PROTOTYPES
  **********************/
 
-/**
- * Initialize the component library
- */
-void ui_init(const char * asset_path);
+
+
+lv_obj_t * boot_create(void);
 
 /**********************
  *      MACROS
@@ -44,4 +49,4 @@ void ui_init(const char * asset_path);
 } /*extern "C"*/
 #endif
 
-#endif /*UI_H*/
+#endif /*BOOT_H*/

@@ -1,25 +1,44 @@
 <globals>
-    <api>
-        <!-- Add <enumdefs> here -->
-    </api>
+	<api>
+		<!-- Add <enumdefs> here -->
+	</api>
 
-    <consts>
-        <!-- Add <px>, <int>, <color> etc here -->
-    </consts>
+	<subjects>
+		<!-- BMS live stats -->
+		<float name="bat_voltage" value="0" />
+		<float name="bat_cells" value="0" />
+		<float name="bat_cell_voltage_min" value="0" />
+		<float name="bat_cell_voltage_max" value="0" />
+		<float name="bat_cell_voltage_diff" value="0" />
+		<int name="bat_soc" value="0" min_value="0" max_value="100" />
 
-    <styles>
-        <!-- Add <style> tags here -->
-    </styles>
+		<!-- ESC live stats -->
+		<float name="speed_ms" value="0" />
+		<float name="esc_power_w" value="0" />
 
-    <subjects>
-        <!-- Add <int>, <string>, or <float> subjects here -->
-    </subjects>
+		<!-- Peripheral states -->
+		<int name="periph_headlight" value="0" min_value="0" max_value="1" />
+		<int name="periph_taillight" value="0" min_value="0" max_value="1" />
+		<int name="periph_breaklight" value="0" min_value="0" max_value="1" />
+		<int name="periph_turnsignal" value="0" min_value="-1" max_value="1" />
 
-    <images>
-        <!-- Add <file> or <data> tags here -->
-    </images>
+		<int name="periph_lights_enabled" value="0" min_value="0" max_value="1" />
+		<int name="periph_breaklight_enabled" value="0" min_value="0" max_value="1" />
+	</subjects>
 
-    <fonts>
-        <!-- Add <bin> , <tiny_ttf>, <freetype> tags here -->
-    </fonts>
+	<consts>
+		<!-- Add <px>, <int>, <color> etc here -->
+	</consts>
+
+	<styles>
+		<!-- Add <style> tags here -->
+	</styles>
+
+	<images>
+		<!-- Add <file> or <data> tags here -->
+	</images>
+
+	<fonts>
+		<!-- Add <bin> , <tiny_ttf>, <freetype> tags here -->
+	</fonts>
 </globals>
