@@ -124,6 +124,8 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
     lv_obj_set_style_text_font(speed_unit_label_0, crixus_italic_xxl, 0);
     lv_obj_set_align(speed_unit_label_0, LV_ALIGN_CENTER);
     lv_obj_set_y(speed_unit_label_0, 110);
+    lv_obj_set_style_pad_left(speed_unit_label_0, 10, 0);
+    lv_obj_set_style_pad_right(speed_unit_label_0, 20, 0);
     lv_obj_add_style(speed_unit_label_0, &speed_label_unit, LV_PART_MAIN);
     
     lv_obj_t * lv_arc_0 = lv_arc_create(lv_obj_0);
@@ -132,7 +134,7 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
     lv_arc_set_bg_start_angle(lv_arc_0, 100);
     lv_arc_set_bg_end_angle(lv_arc_0, 260);
     lv_obj_set_flag(lv_arc_0, LV_OBJ_FLAG_CLICKABLE, false);
-    lv_arc_set_min_value(lv_arc_0, 0);
+    lv_arc_set_min_value(lv_arc_0, -100);
     lv_arc_set_max_value(lv_arc_0, 100);
     lv_arc_bind_value(lv_arc_0, &esc_power_percent);
     lv_obj_add_style(lv_arc_0, &stat_arc_main, LV_PART_MAIN);

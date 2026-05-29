@@ -6,17 +6,23 @@
 		<float name="bat_cell_voltage_min" value="0" />
 		<float name="bat_cell_voltage_max" value="0" />
 		<float name="bat_cell_voltage_diff" value="0" />
-		<int name="bat_soc_percent" value="40" min_value="0" max_value="100" />
-		<int name="bat_soc_state" value="1" help="0=low 1=mid 2=high" />
+		<int name="bat_soc_percent" value="0" min_value="0" max_value="100" />
+		<int name="bat_soc_state" value="0" help="0=low 1=mid 2=high" />
 
 		<!-- ESC live stats -->
-		<float name="speed_ms" value="128" />
+		<float name="speed_ms" value="0" />
 		<float name="speed_kmh" value="0" />
 		<float name="speed_mph" value="0" />
 
-		<int name="esc_power_state" value="1" min_value="-1" max_value="2" />
-		<int name="esc_power_w" value="0" />
-		<int name="esc_power_percent" value="55" min_value="-100" max_value="100" />
+		<int name="esc_power_watt" value="0" />
+		<int name="esc_power_percent" value="0" min_value="-100" max_value="100" />
+		<int
+			name="esc_power_state"
+			value="0"
+			min_value="-1"
+			max_value="2"
+			help="-1 = recuperating, 0=low output, 1=mid output, 2=high output"
+		/>
 
 		<!-- Peripheral states -->
 		<int name="periph_headlight" value="0" min_value="0" max_value="1" />
