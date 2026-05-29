@@ -8,7 +8,7 @@
  *********************/
 
 #include "speed_label_gen.h"
-#include "../ui.h"
+#include "../../ui.h"
 
 /*********************
  *      DEFINES

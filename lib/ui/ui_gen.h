@@ -125,9 +125,9 @@ void ui_init_gen(const char * asset_path);
  **********************/
 
 /*Include all the widgets, components and screens of this library*/
+#include "components/gauge-atoms/speed_label_gen.h"
+#include "components/gauge-atoms/speed_unit_label_gen.h"
 #include "components/gauges/gauge_driftline_gen.h"
-#include "components/speed_label_gen.h"
-#include "components/speed_unit_label_gen.h"
 #include "screens/boot_gen.h"
 #include "screens/main_gen.h"
 

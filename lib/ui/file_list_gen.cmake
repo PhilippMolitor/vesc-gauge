@@ -2,9 +2,9 @@ set(LV_EDITOR_PROJECT_SOURCES)
 list(
   APPEND
   LV_EDITOR_PROJECT_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/components/gauge-atoms/speed_label_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/components/gauge-atoms/speed_unit_label_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/components/gauges/gauge_driftline_gen.c
-  ${CMAKE_CURRENT_LIST_DIR}/components/speed_label_gen.c
-  ${CMAKE_CURRENT_LIST_DIR}/components/speed_unit_label_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/crixus_expanded_italic_ttf_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/crixus_expanded_italic_ttf_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/crixus_expanded_italic_ttf_data.c
