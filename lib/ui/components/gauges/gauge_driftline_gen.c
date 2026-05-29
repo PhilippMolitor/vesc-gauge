@@ -86,13 +86,13 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
         lv_style_set_bg_opa(&stat_arc_knob, 0);
 
         lv_style_init(&stat_power_low);
-        lv_style_set_arc_color(&stat_power_low, SOC_LOW);
+        lv_style_set_arc_color(&stat_power_low, POWER_LOW);
 
         lv_style_init(&stat_power_mid);
-        lv_style_set_arc_color(&stat_power_mid, SOC_MID);
+        lv_style_set_arc_color(&stat_power_mid, POWER_MID);
 
         lv_style_init(&stat_power_high);
-        lv_style_set_arc_color(&stat_power_high, SOC_HIGH);
+        lv_style_set_arc_color(&stat_power_high, POWER_HIGH);
 
         lv_style_init(&stat_soc_low);
         lv_style_set_arc_color(&stat_soc_low, SOC_LOW);
@@ -134,7 +134,7 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
     lv_arc_set_bg_start_angle(lv_arc_0, 100);
     lv_arc_set_bg_end_angle(lv_arc_0, 260);
     lv_obj_set_flag(lv_arc_0, LV_OBJ_FLAG_CLICKABLE, false);
-    lv_arc_set_min_value(lv_arc_0, -100);
+    lv_arc_set_min_value(lv_arc_0, 0);
     lv_arc_set_max_value(lv_arc_0, 100);
     lv_arc_bind_value(lv_arc_0, &esc_power_percent);
     lv_obj_add_style(lv_arc_0, &stat_arc_main, LV_PART_MAIN);

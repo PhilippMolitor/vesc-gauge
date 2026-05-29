@@ -144,7 +144,7 @@ void ui_init_gen(const char * asset_path)
     lv_subject_init_float(&speed_mph, 0);
     lv_subject_init_int(&esc_power_watt, 0);
     lv_subject_init_int(&esc_power_percent, 0);
-    lv_subject_set_min_value_int(&esc_power_percent, -100);
+    lv_subject_set_min_value_int(&esc_power_percent, 0);
     lv_subject_set_max_value_int(&esc_power_percent, 100);
     lv_subject_init_int(&esc_power_state, 0);
     lv_subject_set_min_value_int(&esc_power_state, -1);

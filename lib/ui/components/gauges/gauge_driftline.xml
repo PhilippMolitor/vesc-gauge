@@ -27,9 +27,9 @@
 		<style name="stat_arc_indicator" arc_color="#soc_high" arc_rounded="false" arc_width="#stat_thickness" />
 		<style name="stat_arc_knob" bg_opa="0" />
 
-		<style name="stat_power_low" arc_color="#soc_low" />
-		<style name="stat_power_mid" arc_color="#soc_mid" />
-		<style name="stat_power_high" arc_color="#soc_high" />
+		<style name="stat_power_low" arc_color="#power_low" />
+		<style name="stat_power_mid" arc_color="#power_mid" />
+		<style name="stat_power_high" arc_color="#power_high" />
 
 		<style name="stat_soc_low" arc_color="#soc_low" />
 		<style name="stat_soc_mid" arc_color="#soc_mid" />
@@ -58,7 +58,7 @@
 			bg_start_angle="100"
 			bg_end_angle="260"
 			clickable="false"
-			min_value="-100"
+			min_value="0"
 			max_value="100"
 			bind_value="esc_power_percent"
 		>
@@ -99,7 +99,8 @@
 			<set_subject name="bat_soc_percent" value="30" />
 			<set_subject name="bat_soc_state" value="1" />
 
-			<set_subject name="esc_power_state" value="1" />
+			<set_subject name="esc_power_state" value="0" />
+			<set_subject name="esc_power_percent" value="40" />
 		</preview>
 	</previews>
 </component>

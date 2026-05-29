@@ -15,7 +15,7 @@
 		<float name="speed_mph" value="0" />
 
 		<int name="esc_power_watt" value="0" />
-		<int name="esc_power_percent" value="0" min_value="-100" max_value="100" />
+		<int name="esc_power_percent" value="0" min_value="0" max_value="100" />
 		<int
 			name="esc_power_state"
 			value="0"
