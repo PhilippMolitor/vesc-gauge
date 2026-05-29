@@ -6,9 +6,11 @@
 #include <Wire.h>
 
 #include <ReactESP.h>
+#include <freertos/idf_additions.h>
+
+#include "ui.h"
 
 #include "drivers/display/display.h"
-#include "drivers/sdcard/sdcard.h"
 #include "drivers/tca9554pwr/tca9554.h"
 #include "utils/fifo.h"
 #include "utils/macros.h"
@@ -23,6 +25,15 @@ static const char* LOG_TAG = "main";
 // handles
 static EventLoop runtime;
 static Vehicle vehicle;
+static SemaphoreHandle_t lvgl_mutex;
+
+template <typename F>
+static inline void lvgl_locked(F&& fn)
+{
+  xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+  fn();
+  xSemaphoreGive(lvgl_mutex);
+}
 
 // service state
 static FastFIFO<wled_wizmote_cmd, 16> state_wled_cmd;
@@ -73,16 +84,16 @@ void task_vesc_poll()
 
 void task_vesc_uidata()
 {
-  // ui data cache
-  static float cache_speed = 0;
+  static float cache_speed = -1.0f;
 
-  // gauge
-  auto fresh_speed = speed.filteredValue();
-  if (!FLOAT_COMPARE_E(fresh_speed, cache_speed, 0.4)) {
-    // update cache
-    cache_speed = fresh_speed;
-
-    // TODO: update LVGL subject here
+  auto rounded = roundf(speed.filteredValue());
+  if (rounded != cache_speed) {
+    cache_speed = rounded;
+    lvgl_locked([&] {
+      lv_subject_set_float(&speed_kmh, rounded);
+      lv_subject_set_float(&speed_ms, roundf(rounded / 3.6f));
+      lv_subject_set_float(&speed_mph, roundf(rounded * 0.621371f));
+    });
   }
 }
 
@@ -117,6 +128,11 @@ void task_vehicle()
     vehicle.controls.onLightsSet([](bool on) {
       vehicle.lights.setHeadlight(on);
       vehicle.lights.setTailLight(on);
+      lvgl_locked([&] {
+        lv_subject_set_int(&periph_lights_enabled, on ? 1 : 0);
+        lv_subject_set_int(&periph_headlight, on ? 1 : 0);
+        lv_subject_set_int(&periph_taillight, on ? 1 : 0);
+      });
     });
 
     vehicle.controls.onTurnSignalSet([](Vehicle::Lights::TurnSignal signal) {
@@ -125,15 +141,21 @@ void task_vehicle()
 
       vehicle.lights.setTurnSignal(signal);
 
+      int subjectVal = (signal == Vehicle::Lights::TurnSignal::LEFT) ? -1
+          : (signal == Vehicle::Lights::TurnSignal::RIGHT)           ? 1
+                                                                     : 0;
+      lvgl_locked([&] { lv_subject_set_int(&periph_turnsignal, subjectVal); });
+
       // reset turn signal after 3 seconds
       turnSignalDelayEvent = runtime.onDelay(3000, []() {
         vehicle.lights.setTurnSignal(Vehicle::Lights::TurnSignal::OFF);
+        lvgl_locked([&] { lv_subject_set_int(&periph_turnsignal, 0); });
       });
     });
     initialized = true;
   }
 
-  vehicle.lights.setTurnSignal(Vehicle::Lights::TurnSignal::LEFT);
+  vehicle.controls.update();
 }
 
 void task_debug_perfmon()
@@ -170,13 +192,27 @@ void setup()
   // otherwise the microcontroller will crash.
   wled_esp_now_init();
 
+  vehicle.begin();
+
   display_init();
-  // TODO: init UI here
+  ui_init(NULL);
+  lv_screen_load(boot_create());
+
+  lvgl_mutex = xSemaphoreCreateMutex();
+
+  xTaskCreatePinnedToCoreWithCaps(
+      [](void*) {
+        for (;;) {
+          lvgl_locked([] { lv_task_handler(); });
+          vTaskDelay(pdMS_TO_TICKS(5));
+        }
+      },
+      "lvgl", 65536, NULL, 5, NULL, 1,
+      MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
   // tasks
-  runtime.onRepeat(Hz(200), lv_task_handler);
   runtime.onRepeat(Hz(10), task_vesc_poll);
-  runtime.onRepeat(Hz(16), task_vesc_uidata);
+  runtime.onRepeat(Hz(10), task_vesc_uidata);
   runtime.onRepeat(Hz(8), task_wled);
   runtime.onRepeat(Hz(60), task_vehicle);
 

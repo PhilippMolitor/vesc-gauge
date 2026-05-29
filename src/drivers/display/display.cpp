@@ -7,7 +7,7 @@
 #include "cst820.h"
 #include "st7701.h"
 
-#define FB_SIZE_PX (ST7701_BOUNCE_BUFFER_SIZE * 4)
+#define FB_SIZE_PX (ST7701_WIDTH * 80)
 #define FB_SIZE_BYTES (FB_SIZE_PX * (ST7701_LCD_PIXEL_BITS / 8))
 
 static lv_color_t* frame_buf_a = (lv_color_t*)heap_caps_aligned_alloc(16, FB_SIZE_BYTES, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);

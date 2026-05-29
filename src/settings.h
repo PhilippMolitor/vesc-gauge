@@ -1,6 +1,7 @@
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
+#include <stddef.h>
 
 constexpr uint8_t ANALOG_READ_RESOLUTION = 12;
 
