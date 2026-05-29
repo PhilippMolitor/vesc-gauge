@@ -35,11 +35,13 @@ extern "C" {
  *      DEFINES
  *********************/
 
-#define BG_MAIN lv_color_hex3(0x000)
-
 #define FG_MAIN lv_color_hex3(0xfff)
 
-#define BG_CONTANT lv_color_hex3(0x222)
+#define FG_DIMMED lv_color_hex(0xc9c9c9)
+
+#define BG_MAIN lv_color_hex3(0x000)
+
+#define BG_CONTENT lv_color_hex3(0x222)
 
 /**********************
  *      TYPEDEFS
@@ -82,7 +84,8 @@ extern lv_subject_t bat_cells;
 extern lv_subject_t bat_cell_voltage_min;
 extern lv_subject_t bat_cell_voltage_max;
 extern lv_subject_t bat_cell_voltage_diff;
-extern lv_subject_t bat_soc;
+extern lv_subject_t bat_soc_percent;
+extern lv_subject_t bat_soc_state;
 extern lv_subject_t speed_ms;
 extern lv_subject_t esc_power_w;
 extern lv_subject_t periph_headlight;

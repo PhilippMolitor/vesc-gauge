@@ -1,11 +1,28 @@
 <component>
+	<consts>
+		<color name="soc_low" value="0xf00" />
+		<color name="soc_mid" value="0xff0" />
+		<color name="soc_high" value="0x0f0" />
+	</consts>
+
 	<styles>
 		<style name="speed_label_main" text_color="#fg_main" />
-		<style name="speed_label_unit" text_color="#bg_contant" />
+		<style name="speed_label_unit" text_color="#fg_dimmed" />
 
-		<style name="stat_arc_main" align="center" width="474" height="474" radius="0" arc_color="0x222" />
-		<style name="stat_arc_indicator" text_color="0x0f0" />
-		<style name="stat_arc_knob" bg_color="0xf00" />
+		<style
+			name="stat_arc_main"
+			align="center"
+			width="474"
+			height="474"
+			radius="0"
+			arc_opa="0"
+			arc_rounded="false"
+		/>
+		<style name="stat_arc_indicator" arc_color="0x0f0" arc_rounded="false" arc_width="6" />
+		<style name="stat_arc_knob" bg_opa="0" />
+		<style name="stat_soc_low" arc_color="#soc_low" />
+		<style name="stat_soc_mid" arc_color="#soc_mid" />
+		<style name="stat_soc_high" arc_color="#soc_high" />
 	</styles>
 
 	<previews>
@@ -30,7 +47,7 @@
 			clickable="false"
 			min_value="0"
 			max_value="100"
-			value="30"
+			value="20"
 		>
 			<style name="stat_arc_main" selector="main" />
 			<style name="stat_arc_indicator" selector="indicator" />
@@ -45,11 +62,15 @@
 			clickable="false"
 			min_value="0"
 			max_value="100"
-			value="30"
+			bind_value="bat_soc_percent"
 		>
 			<style name="stat_arc_main" selector="main" />
 			<style name="stat_arc_indicator" selector="indicator" />
 			<style name="stat_arc_knob" selector="knob" />
+
+			<bind_style name="stat_soc_low" subject="bat_soc_state" ref_value="0" selector="indicator" />
+			<bind_style name="stat_soc_mid" subject="bat_soc_state" ref_value="1" selector="indicator" />
+			<bind_style name="stat_soc_high" subject="bat_soc_state" ref_value="2" selector="indicator" />
 		</lv_arc>
 	</view>
 </component>

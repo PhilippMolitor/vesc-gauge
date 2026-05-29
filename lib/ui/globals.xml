@@ -6,7 +6,8 @@
 		<float name="bat_cell_voltage_min" value="0" />
 		<float name="bat_cell_voltage_max" value="0" />
 		<float name="bat_cell_voltage_diff" value="0" />
-		<int name="bat_soc" value="0" min_value="0" max_value="100" />
+		<int name="bat_soc_percent" value="40" min_value="0" max_value="100" />
+		<int name="bat_soc_state" value="1" help="0=low 1=mid 2=high" />
 
 		<!-- ESC live stats -->
 		<float name="speed_ms" value="0" />
@@ -27,10 +28,11 @@
 
 	<consts>
 		<!-- dark color scheme (default) -->
-		<color name="bg_main" value="0x000" />
 		<color name="fg_main" value="0xfff" />
+		<color name="fg_dimmed" value="0xc9c9c9" />
+		<color name="bg_main" value="0x000" />
 
-		<color name="bg_contant" value="0x222" />
+		<color name="bg_content" value="0x222" />
 	</consts>
 
 	<styles>
