@@ -36,10 +36,11 @@ lv_obj_t * speed_unit_label_create(lv_obj_t * parent)
 
     lv_obj_t * lv_label_0 = lv_label_create(parent);
     lv_obj_set_name_static(lv_label_0, "speed_unit_label_#");
+    lv_label_set_text(lv_label_0, "");
 
     lv_obj_t * lv_label_1 = lv_label_create(lv_label_0);
     lv_label_set_text(lv_label_1, "m/s");
-    lv_obj_bind_flag_if_not_eq(lv_label_1, &ui_speed_unit, LV_OBJ_FLAG_HIDDEN, 0);
+    lv_obj_bind_flag_if_not_eq(lv_label_1, &bat_cells, LV_OBJ_FLAG_HIDDEN, 0);
     
     lv_obj_t * lv_label_2 = lv_label_create(lv_label_0);
     lv_label_set_text(lv_label_2, "KM/H");

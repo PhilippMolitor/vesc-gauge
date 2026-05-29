@@ -17,7 +17,7 @@
 		<lv_label style_text_font="crixus_italic_4xl" align="center" text="45" style_pad_left="-38">
 			<style name="speed_label_main" selector="main" />
 		</lv_label>
-		<speed_unit_label style_text_font="crixus_italic_xxl" align="center" y="110" text="KM/H">
+		<speed_unit_label style_text_font="crixus_italic_xxl" align="center" y="110">
 			<style name="speed_label_unit" selector="main" />
 		</speed_unit_label>
 
