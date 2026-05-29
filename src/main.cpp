@@ -7,22 +7,22 @@
 
 #include <ReactESP.h>
 
-#include <ui.h>
-
 #include "drivers/display/display.h"
 #include "drivers/sdcard/sdcard.h"
 #include "drivers/tca9554pwr/tca9554.h"
 #include "utils/fifo.h"
 #include "utils/macros.h"
 #include "utils/wmavg.h"
+#include "vehicle.h"
 #include "wled_esp_now/wled_esp_now.h"
 
 using namespace reactesp;
 
-static constexpr char* LOG_TAG = "main";
+static const char* LOG_TAG = "main";
 
 // handles
-static EventLoop evloop;
+static EventLoop runtime;
+static Vehicle vehicle;
 
 // service state
 static FastFIFO<wled_wizmote_cmd, 16> state_wled_cmd;
@@ -61,7 +61,6 @@ void ui_cb_wled_brightness_set(lv_event_t* e)
 void task_vesc_poll()
 {
   // TODO: poll actual VESC data
-
   static uint32_t startTime = millis();
   uint32_t currentTime = millis();
   float elapsedTime = (currentTime - startTime) / 1000.0;
@@ -82,10 +81,8 @@ void task_vesc_uidata()
   if (!FLOAT_COMPARE_E(fresh_speed, cache_speed, 0.4)) {
     // update cache
     cache_speed = fresh_speed;
-    // update UI
-    char speed_str[10];
-    snprintf(speed_str, sizeof(speed_str), "%.0f", fresh_speed);
-    lv_label_set_text(ui_main_label_speed_value, speed_str);
+
+    // TODO: update LVGL subject here
   }
 }
 
@@ -97,10 +94,11 @@ void task_wled()
     // set esp-now mac address in UI
     uint8_t wled_mac[6];
     wled_esp_now_mac_get(wled_mac);
-    char wled_mac_str[23];
-    snprintf(wled_mac_str, sizeof(wled_mac_str), "MAC: %02X:%02X:%02X:%02X:%02X:%02X",
+    char wled_mac_str[18];
+    snprintf(wled_mac_str, sizeof(wled_mac_str), "%02X:%02X:%02X:%02X:%02X:%02X",
         wled_mac[0], wled_mac[1], wled_mac[2], wled_mac[3], wled_mac[4], wled_mac[5]);
-    lv_label_set_text(ui_wled_settings_label_macaddr, wled_mac_str);
+
+    // TODO: update LVGL subject here
 
     initialized = true;
   }
@@ -108,6 +106,34 @@ void task_wled()
   wled_wizmote_cmd cmd;
   if (state_wled_cmd.dequeue(&cmd))
     wled_esp_now_wizmote_cmd(static_cast<wled_wizmote_cmd>(cmd));
+}
+
+void task_vehicle()
+{
+  static bool initialized = false;
+  static DelayEvent* turnSignalDelayEvent = nullptr;
+
+  if (!initialized) {
+    vehicle.controls.onLightsSet([](bool on) {
+      vehicle.lights.setHeadlight(on);
+      vehicle.lights.setTailLight(on);
+    });
+
+    vehicle.controls.onTurnSignalSet([](Vehicle::Lights::TurnSignal signal) {
+      if (turnSignalDelayEvent)
+        turnSignalDelayEvent->remove(&runtime);
+
+      vehicle.lights.setTurnSignal(signal);
+
+      // reset turn signal after 3 seconds
+      turnSignalDelayEvent = runtime.onDelay(3000, []() {
+        vehicle.lights.setTurnSignal(Vehicle::Lights::TurnSignal::OFF);
+      });
+    });
+    initialized = true;
+  }
+
+  vehicle.lights.setTurnSignal(Vehicle::Lights::TurnSignal::LEFT);
 }
 
 void task_debug_perfmon()
@@ -122,9 +148,18 @@ void task_debug_perfmon()
 
 void setup()
 {
-  analogReadResolution(ANALOG_READ_RESOLUTION);
-  Wire.begin(SDA, SCL);
+  // USB UART
   Serial.begin(115200);
+
+  // VESC UART
+  Serial1.setPins(PIN_SERIAL_RX, PIN_SERIAL_TX);
+  Serial1.begin(115200);
+
+  // I2C bus
+  Wire.begin(SDA, SCL);
+
+  // ADC
+  analogReadResolution(ANALOG_READ_RESOLUTION);
 
   // IO expander
   tca9554pwr_init(0x00);
@@ -136,19 +171,20 @@ void setup()
   wled_esp_now_init();
 
   display_init();
-  ui_init();
+  // TODO: init UI here
 
   // tasks
-  evloop.onRepeat(Hz(200), lv_task_handler);
-  evloop.onRepeat(Hz(10), task_vesc_poll);
-  evloop.onRepeat(Hz(16), task_vesc_uidata);
-  evloop.onRepeat(Hz(8), task_wled);
+  runtime.onRepeat(Hz(200), lv_task_handler);
+  runtime.onRepeat(Hz(10), task_vesc_poll);
+  runtime.onRepeat(Hz(16), task_vesc_uidata);
+  runtime.onRepeat(Hz(8), task_wled);
+  runtime.onRepeat(Hz(60), task_vehicle);
 
   // debugging
-  evloop.onRepeat(Hz(0.1), task_debug_perfmon);
+  runtime.onRepeat(Hz(0.1), task_debug_perfmon);
 }
 
 void loop()
 {
-  evloop.tick();
+  runtime.tick();
 }

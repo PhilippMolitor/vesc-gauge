@@ -1,13 +1,13 @@
 #pragma once
 
-#include <inttypes.h>
+#include <cstdint>
 
-#define TCA9554PWR_ADDRESS (0x20)
+constexpr uint8_t TCA9554PWR_ADDRESS = 0x20;
 
-#define TCA9554PWR_REG_INPUT (0x00)
-#define TCA9554PWR_REG_OUTPUT (0x01)
-#define TCA9554PWR_REG_POLARITY (0x02)
-#define TCA9554PWR_REG_CONFIG (0x03)
+constexpr uint8_t TCA9554PWR_REG_INPUT = 0x00;
+constexpr uint8_t TCA9554PWR_REG_OUTPUT = 0x01;
+constexpr uint8_t TCA9554PWR_REG_POLARITY = 0x02;
+constexpr uint8_t TCA9554PWR_REG_CONFIG = 0x03;
 
 void tca9554pwr_init(uint8_t state = 0x00);
 void tca9554pwr_configure(uint8_t pin, uint8_t state);

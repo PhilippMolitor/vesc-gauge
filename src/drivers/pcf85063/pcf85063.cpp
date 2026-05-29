@@ -68,7 +68,7 @@ static uint8_t dec_to_bcd(uint8_t dec)
 
 static uint8_t bcd_to_dec(uint8_t bcd)
 {
-  return ((bcd >> 4) * 10) + (bcd & 0x0F);
+  return ((bcd >> 4) * 10) + (bcd & 0x0f);
 }
 
 uint8_t pcf85063_init()

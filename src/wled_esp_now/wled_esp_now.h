@@ -2,12 +2,12 @@
 
 #include <Arduino.h>
 
-#define WLED_ESP_NOW_CHANNEL_MIN (1u)
-#define WLED_ESP_NOW_CHANNEL_MAX (14u)
+static constexpr uint8_t WLED_ESP_NOW_CHANNEL_MIN = 1;
+static constexpr uint8_t WLED_ESP_NOW_CHANNEL_MAX = 14;
 
-#define WLED_ESP_NOW_COUNT_PRESETS_DEFAULT (4u)
-#define WLED_ESP_NOW_COUNT_PRESETS (10u)
-#define WLED_ESP_NOW_COUNT_BRIGHTNESS (10u)
+static constexpr uint8_t WLED_ESP_NOW_COUNT_PRESETS_DEFAULT = 4;
+static constexpr uint8_t WLED_ESP_NOW_COUNT_PRESETS = 10;
+static constexpr uint8_t WLED_ESP_NOW_COUNT_BRIGHTNESS = 10;
 
 enum wled_wizmote_cmd : uint8_t {
   POWER_ON = 1,

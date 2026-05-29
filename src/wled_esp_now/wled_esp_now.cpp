@@ -6,10 +6,10 @@
 #include <esp_now.h>
 #include <esp_wifi.h>
 
-#define WLED_ESP_NOW_TX_REPEATS (3u)
-#define WLED_ESP_NOW_TX_TIMEOUT (10000u) // 10000uS = 10ms
+static constexpr uint32_t WLED_ESP_NOW_TX_REPEATS = 3;
+static constexpr uint32_t WLED_ESP_NOW_TX_TIMEOUT = 10000; // 10000uS = 10ms
 
-static const char* LOG_TAG = "wled_esp_now";
+static constexpr char* LOG_TAG = "wled_esp_now";
 
 static constexpr uint8_t wled_broadcast_addr[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
@@ -31,7 +31,7 @@ static esp_now_peer_info_t state_espnow_peer_info;
 static bool state_tx_started = false;
 static bool state_tx_ack = false;
 
-static void wled_tx_cb(const uint8_t* mac_addr, esp_now_send_status_t status)
+static void wled_tx_cb(const esp_now_send_info_t* tx_info, esp_now_send_status_t status)
 {
   ESP_LOGV(LOG_TAG, "tx status: %s", status == ESP_NOW_SEND_SUCCESS ? "success" : "fail");
   state_tx_ack = true;
