@@ -130,6 +130,7 @@ lv_obj_t * boot_create(void)
     lv_label_set_text(boot_label, "INITIALIZING...");
     lv_obj_set_style_text_color(boot_label, lv_color_hex(0xffffff), 0);
     lv_obj_set_style_text_font(boot_label, crixus_italic_lg, 0);
+    lv_obj_set_style_opa(boot_label, 0, 0);
     
     lv_obj_t * boot_spinner = lv_spinner_create(lv_obj_1);
     lv_obj_set_name(boot_spinner, "boot_spinner");
@@ -138,6 +139,7 @@ lv_obj_t * boot_create(void)
     lv_spinner_set_anim_duration(boot_spinner, 900);
     lv_spinner_set_arc_sweep(boot_spinner, 270);
     lv_obj_set_flag(boot_spinner, LV_OBJ_FLAG_CLICKABLE, false);
+    lv_obj_set_style_opa(boot_spinner, 0, 0);
     lv_obj_add_style(boot_spinner, &spinner_main, LV_PART_MAIN);
     lv_obj_add_style(boot_spinner, &spinner_indicator, LV_PART_INDICATOR);
     lv_obj_add_style(boot_spinner, &spinner_knob, LV_PART_KNOB);

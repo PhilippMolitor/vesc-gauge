@@ -118,6 +118,7 @@
 				text="INITIALIZING..."
 				style_text_color="0xffffff"
 				style_text_font="crixus_italic_lg"
+				style_opa="0"
 			/>
 			<lv_spinner
 				name="boot_spinner"
@@ -126,6 +127,7 @@
 				anim_duration="900"
 				arc_sweep="270"
 				clickable="false"
+				style_opa="0"
 			>
 				<style name="spinner_main" selector="main" />
 				<style name="spinner_indicator" selector="indicator" />
