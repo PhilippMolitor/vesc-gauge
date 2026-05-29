@@ -79,6 +79,8 @@ extern lv_font_t * crixus_italic_4xl;
  * Images
  *----------------*/
 
+extern const void * yaiba_logo;
+
 /*----------------
  * Subjects
  *----------------*/

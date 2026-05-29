@@ -110,8 +110,9 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
     lv_obj_set_name_static(lv_obj_0, "gauge_driftline_#");
     lv_obj_set_width(lv_obj_0, lv_pct(100));
     lv_obj_set_height(lv_obj_0, lv_pct(100));
-    lv_obj_set_style_bg_color(lv_obj_0, lv_color_hex3(0x000), 0);
+    lv_obj_set_style_bg_color(lv_obj_0, BG_MAIN, 0);
     lv_obj_set_flag(lv_obj_0, LV_OBJ_FLAG_SCROLLABLE, false);
+    lv_obj_set_style_border_width(lv_obj_0, 0, 0);
 
     lv_obj_t * speed_label_0 = speed_label_create(lv_obj_0);
     lv_obj_set_style_text_font(speed_label_0, crixus_italic_4xl, 0);

@@ -50,7 +50,7 @@
 	</styles>
 
 	<images>
-		<!-- Add <file> or <data> tags here -->
+		<file name="yaiba_logo" src_path="images/yaiba-logo.png" file_format="png" />
 	</images>
 
 	<fonts>

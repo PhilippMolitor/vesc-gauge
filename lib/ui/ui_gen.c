@@ -60,6 +60,8 @@ lv_font_t * crixus_italic_4xl;
  * Images
  *----------------*/
 
+const void * yaiba_logo;
+
 /*----------------
  * Global styles
  *----------------*/
@@ -123,6 +125,9 @@ void ui_init_gen(const char * asset_path)
     /*----------------
      * Images
      *----------------*/
+    lv_snprintf(buf, 256, "%s%s", asset_path, "images/yaiba-logo.png");
+    yaiba_logo = lv_strdup(buf);
+
     /*----------------
      * Global styles
      *----------------*/
@@ -213,6 +218,7 @@ void ui_init_gen(const char * asset_path)
      * While running in the editor skip this step to update the preview when the XML changes */
 #if LV_USE_XML && !defined(LV_EDITOR_PREVIEW)
     /* Register images */
+    lv_xml_register_image(NULL, "yaiba_logo", yaiba_logo);
 #endif
 
 #if LV_USE_XML == 0
