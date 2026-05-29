@@ -74,6 +74,8 @@ lv_subject_t bat_cell_voltage_diff;
 lv_subject_t bat_soc_percent;
 lv_subject_t bat_soc_state;
 lv_subject_t speed_ms;
+lv_subject_t speed_kmh;
+lv_subject_t speed_mph;
 lv_subject_t esc_power_w;
 lv_subject_t periph_headlight;
 lv_subject_t periph_taillight;
@@ -129,7 +131,9 @@ void ui_init_gen(const char * asset_path)
     lv_subject_set_min_value_int(&bat_soc_percent, 0);
     lv_subject_set_max_value_int(&bat_soc_percent, 100);
     lv_subject_init_int(&bat_soc_state, 1);
-    lv_subject_init_float(&speed_ms, 0);
+    lv_subject_init_float(&speed_ms, 128);
+    lv_subject_init_float(&speed_kmh, 0);
+    lv_subject_init_float(&speed_mph, 0);
     lv_subject_init_float(&esc_power_w, 0);
     lv_subject_init_int(&periph_headlight, 0);
     lv_subject_set_min_value_int(&periph_headlight, 0);
@@ -173,6 +177,8 @@ void ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "bat_soc_percent", &bat_soc_percent);
     lv_xml_register_subject(NULL, "bat_soc_state", &bat_soc_state);
     lv_xml_register_subject(NULL, "speed_ms", &speed_ms);
+    lv_xml_register_subject(NULL, "speed_kmh", &speed_kmh);
+    lv_xml_register_subject(NULL, "speed_mph", &speed_mph);
     lv_xml_register_subject(NULL, "esc_power_w", &esc_power_w);
     lv_xml_register_subject(NULL, "periph_headlight", &periph_headlight);
     lv_xml_register_subject(NULL, "periph_taillight", &periph_taillight);

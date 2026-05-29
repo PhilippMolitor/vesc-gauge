@@ -1,12 +1,15 @@
 <component>
+	<consts>
+		<string name="format" value="%0.f" />
+	</consts>
 	<view extends="lv_label" text="">
-		<lv_label text="m/s">
+		<lv_label bind_text="speed_ms" bind_text-fmt="#format">
 			<bind_flag_if_not_eq subject="ui_speed_unit" flag="hidden" ref_value="0" />
 		</lv_label>
-		<lv_label text="KM/H">
+		<lv_label bind_text="speed_kmh" bind_text-fmt="#format">
 			<bind_flag_if_not_eq subject="ui_speed_unit" flag="hidden" ref_value="1" />
 		</lv_label>
-		<lv_label text="MPH">
+		<lv_label bind_text="speed_mph" bind_text-fmt="#format">
 			<bind_flag_if_not_eq subject="ui_speed_unit" flag="hidden" ref_value="2" />
 		</lv_label>
 	</view>

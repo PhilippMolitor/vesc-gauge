@@ -10,7 +10,9 @@
 		<int name="bat_soc_state" value="1" help="0=low 1=mid 2=high" />
 
 		<!-- ESC live stats -->
-		<float name="speed_ms" value="0" />
+		<float name="speed_ms" value="128" />
+		<float name="speed_kmh" value="0" />
+		<float name="speed_mph" value="0" />
 		<float name="esc_power_w" value="0" />
 
 		<!-- Peripheral states -->
@@ -31,7 +33,6 @@
 		<color name="fg_main" value="0xfff" />
 		<color name="fg_dimmed" value="0xc9c9c9" />
 		<color name="bg_main" value="0x000" />
-
 		<color name="bg_content" value="0x222" />
 	</consts>
 

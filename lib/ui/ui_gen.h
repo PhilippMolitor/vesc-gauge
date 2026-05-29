@@ -87,6 +87,8 @@ extern lv_subject_t bat_cell_voltage_diff;
 extern lv_subject_t bat_soc_percent;
 extern lv_subject_t bat_soc_state;
 extern lv_subject_t speed_ms;
+extern lv_subject_t speed_kmh;
+extern lv_subject_t speed_mph;
 extern lv_subject_t esc_power_w;
 extern lv_subject_t periph_headlight;
 extern lv_subject_t periph_taillight;
@@ -119,6 +121,7 @@ void ui_init_gen(const char * asset_path);
  **********************/
 
 /*Include all the widgets, components and screens of this library*/
+#include "components/speed_label_gen.h"
 #include "components/speed_unit_label_gen.h"
 #include "screens/boot_gen.h"
 
