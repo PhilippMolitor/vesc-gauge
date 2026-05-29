@@ -13,7 +13,10 @@
 		<float name="speed_ms" value="128" />
 		<float name="speed_kmh" value="0" />
 		<float name="speed_mph" value="0" />
-		<float name="esc_power_w" value="0" />
+
+		<int name="esc_power_state" value="1" min_value="-1" max_value="2" />
+		<int name="esc_power_w" value="0" />
+		<int name="esc_power_percent" value="55" min_value="-100" max_value="100" />
 
 		<!-- Peripheral states -->
 		<int name="periph_headlight" value="0" min_value="0" max_value="1" />

@@ -14,11 +14,19 @@
  *      DEFINES
  *********************/
 
-#define SOC_LOW lv_color_hex3(0xf00)
+#define STAT_THICKNESS 14
 
-#define SOC_MID lv_color_hex3(0xff0)
+#define POWER_LOW lv_color_hex(0x009a00)
 
-#define SOC_HIGH lv_color_hex3(0x0f0)
+#define POWER_MID lv_color_hex(0xd39111)
+
+#define POWER_HIGH lv_color_hex(0xd02626)
+
+#define SOC_LOW lv_color_hex(0xd02626)
+
+#define SOC_MID lv_color_hex(0xd39111)
+
+#define SOC_HIGH lv_color_hex(0x009a00)
 
 /**********************
  *      TYPEDEFS
@@ -45,6 +53,9 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
     static lv_style_t stat_arc_main;
     static lv_style_t stat_arc_indicator;
     static lv_style_t stat_arc_knob;
+    static lv_style_t stat_power_low;
+    static lv_style_t stat_power_mid;
+    static lv_style_t stat_power_high;
     static lv_style_t stat_soc_low;
     static lv_style_t stat_soc_mid;
     static lv_style_t stat_soc_high;
@@ -67,12 +78,21 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
         lv_style_set_arc_rounded(&stat_arc_main, false);
 
         lv_style_init(&stat_arc_indicator);
-        lv_style_set_arc_color(&stat_arc_indicator, lv_color_hex3(0x0f0));
+        lv_style_set_arc_color(&stat_arc_indicator, SOC_HIGH);
         lv_style_set_arc_rounded(&stat_arc_indicator, false);
-        lv_style_set_arc_width(&stat_arc_indicator, 6);
+        lv_style_set_arc_width(&stat_arc_indicator, STAT_THICKNESS);
 
         lv_style_init(&stat_arc_knob);
         lv_style_set_bg_opa(&stat_arc_knob, 0);
+
+        lv_style_init(&stat_power_low);
+        lv_style_set_arc_color(&stat_power_low, SOC_LOW);
+
+        lv_style_init(&stat_power_mid);
+        lv_style_set_arc_color(&stat_power_mid, SOC_MID);
+
+        lv_style_init(&stat_power_high);
+        lv_style_set_arc_color(&stat_power_high, SOC_HIGH);
 
         lv_style_init(&stat_soc_low);
         lv_style_set_arc_color(&stat_soc_low, SOC_LOW);
@@ -91,6 +111,7 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
     lv_obj_set_width(lv_obj_0, lv_pct(100));
     lv_obj_set_height(lv_obj_0, lv_pct(100));
     lv_obj_set_style_bg_color(lv_obj_0, lv_color_hex3(0x000), 0);
+    lv_obj_set_flag(lv_obj_0, LV_OBJ_FLAG_SCROLLABLE, false);
 
     lv_obj_t * speed_label_0 = speed_label_create(lv_obj_0);
     lv_obj_set_style_text_font(speed_label_0, crixus_italic_4xl, 0);
@@ -113,10 +134,13 @@ lv_obj_t * gauge_driftline_create(lv_obj_t * parent)
     lv_obj_set_flag(lv_arc_0, LV_OBJ_FLAG_CLICKABLE, false);
     lv_arc_set_min_value(lv_arc_0, 0);
     lv_arc_set_max_value(lv_arc_0, 100);
-    lv_arc_set_value(lv_arc_0, 20);
+    lv_arc_bind_value(lv_arc_0, &esc_power_percent);
     lv_obj_add_style(lv_arc_0, &stat_arc_main, LV_PART_MAIN);
     lv_obj_add_style(lv_arc_0, &stat_arc_indicator, LV_PART_INDICATOR);
     lv_obj_add_style(lv_arc_0, &stat_arc_knob, LV_PART_KNOB);
+    lv_obj_bind_style(lv_arc_0, &stat_power_low, LV_PART_INDICATOR, &esc_power_state, 0);
+    lv_obj_bind_style(lv_arc_0, &stat_power_mid, LV_PART_INDICATOR, &esc_power_state, 1);
+    lv_obj_bind_style(lv_arc_0, &stat_power_high, LV_PART_INDICATOR, &esc_power_state, 2);
     
     lv_obj_t * lv_arc_1 = lv_arc_create(lv_obj_0);
     lv_arc_set_bg_start_angle(lv_arc_1, 280);
