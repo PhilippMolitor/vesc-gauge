@@ -46,7 +46,7 @@ lv_obj_t * main_create(void)
     lv_obj_set_name_static(lv_obj_0, "main_#");
     lv_obj_set_style_bg_color(lv_obj_0, BG_MAIN, 0);
 
-    gauge-driftline_create(lv_obj_0);
+    gauge_driftline_create(lv_obj_0);
 
     LV_TRACE_OBJ_CREATE("finished");
 
