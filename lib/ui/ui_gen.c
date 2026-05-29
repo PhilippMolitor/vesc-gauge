@@ -80,6 +80,7 @@ lv_subject_t periph_breaklight;
 lv_subject_t periph_turnsignal;
 lv_subject_t periph_lights_enabled;
 lv_subject_t periph_breaklight_enabled;
+lv_subject_t ui_speed_unit;
 
 /**********************
  *      MACROS
@@ -146,6 +147,7 @@ void ui_init_gen(const char * asset_path)
     lv_subject_init_int(&periph_breaklight_enabled, 0);
     lv_subject_set_min_value_int(&periph_breaklight_enabled, 0);
     lv_subject_set_max_value_int(&periph_breaklight_enabled, 1);
+    lv_subject_init_int(&ui_speed_unit, 0);
 
     /*----------------
      * Translations
@@ -175,6 +177,7 @@ void ui_init_gen(const char * asset_path)
     lv_xml_register_subject(NULL, "periph_turnsignal", &periph_turnsignal);
     lv_xml_register_subject(NULL, "periph_lights_enabled", &periph_lights_enabled);
     lv_xml_register_subject(NULL, "periph_breaklight_enabled", &periph_breaklight_enabled);
+    lv_xml_register_subject(NULL, "ui_speed_unit", &ui_speed_unit);
 
     /* Register callbacks */
 #endif

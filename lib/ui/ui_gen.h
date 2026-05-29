@@ -35,6 +35,12 @@ extern "C" {
  *      DEFINES
  *********************/
 
+#define BG_MAIN lv_color_hex3(0x000)
+
+#define FG_MAIN lv_color_hex3(0xfff)
+
+#define BG_CONTANT lv_color_hex3(0x222)
+
 /**********************
  *      TYPEDEFS
  **********************/
@@ -85,6 +91,7 @@ extern lv_subject_t periph_breaklight;
 extern lv_subject_t periph_turnsignal;
 extern lv_subject_t periph_lights_enabled;
 extern lv_subject_t periph_breaklight_enabled;
+extern lv_subject_t ui_speed_unit;
 
 /**********************
  * GLOBAL PROTOTYPES
@@ -109,6 +116,7 @@ void ui_init_gen(const char * asset_path);
  **********************/
 
 /*Include all the widgets, components and screens of this library*/
+#include "components/speed_unit_label_gen.h"
 #include "screens/boot_gen.h"
 
 #ifdef __cplusplus
