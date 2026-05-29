@@ -121,7 +121,7 @@ lv_obj_t * boot_create(void)
     lv_obj_set_style_bg_opa(lv_obj_1, 0, 0);
     lv_obj_set_style_border_width(lv_obj_1, 0, 0);
     lv_obj_set_width(lv_obj_1, lv_pct(100));
-    lv_obj_set_height(lv_obj_1, 40);
+    lv_obj_set_height(lv_obj_1, LV_SIZE_CONTENT);
     lv_obj_set_align(lv_obj_1, LV_ALIGN_CENTER);
     lv_obj_set_y(lv_obj_1, 60);
     lv_obj_set_flag(lv_obj_1, LV_OBJ_FLAG_SCROLLABLE, false);
