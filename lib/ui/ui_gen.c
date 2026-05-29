@@ -61,6 +61,7 @@ lv_font_t * crixus_italic_4xl;
  *----------------*/
 
 const void * yaiba_logo;
+extern const void * yaiba_logo_data;
 
 /*----------------
  * Global styles
@@ -125,8 +126,7 @@ void ui_init_gen(const char * asset_path)
     /*----------------
      * Images
      *----------------*/
-    lv_snprintf(buf, 256, "%s%s", asset_path, "images/yaiba-logo.png");
-    yaiba_logo = lv_strdup(buf);
+    yaiba_logo = &yaiba_logo_data;
 
     /*----------------
      * Global styles

@@ -50,7 +50,7 @@
 	</styles>
 
 	<images>
-		<file name="yaiba_logo" src_path="images/yaiba-logo.png" file_format="png" />
+		<data name="yaiba_logo" src_path="images/yaiba-logo.png" file_format="png" color_format="rgb565" />
 	</images>
 
 	<fonts>
