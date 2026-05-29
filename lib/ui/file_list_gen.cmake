@@ -6,8 +6,11 @@ list(
   ${CMAKE_CURRENT_LIST_DIR}/components/speed_unit_label_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/crixus_expanded_italic_ttf_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/crixus_expanded_italic_ttf_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/crixus_expanded_italic_ttf_data.c
+  ${CMAKE_CURRENT_LIST_DIR}/fonts/crixus_expanded_italic_ttf_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/manrope_bold_ttf_data.c
   ${CMAKE_CURRENT_LIST_DIR}/fonts/manrope_regular_ttf_data.c
   ${CMAKE_CURRENT_LIST_DIR}/screens/boot_gen.c
+  ${CMAKE_CURRENT_LIST_DIR}/screens/main_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/ui_gen.c
   ${CMAKE_CURRENT_LIST_DIR}/ui.c)

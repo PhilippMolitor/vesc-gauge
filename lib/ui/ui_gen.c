@@ -49,9 +49,11 @@ extern size_t manrope_regular_ttf_data_size;
 lv_font_t * manrope_bold_md;
 extern uint8_t manrope_bold_ttf_data[];
 extern size_t manrope_bold_ttf_data_size;
-lv_font_t * crixus_italic_xxl;
+lv_font_t * crixus_italic_md;
 extern uint8_t crixus_expanded_italic_ttf_data[];
 extern size_t crixus_expanded_italic_ttf_data_size;
+lv_font_t * crixus_italic_lg;
+lv_font_t * crixus_italic_xxl;
 lv_font_t * crixus_italic_4xl;
 
 /*----------------
@@ -106,6 +108,10 @@ void ui_init_gen(const char * asset_path)
     manrope_md = lv_tiny_ttf_create_data(manrope_regular_ttf_data, manrope_regular_ttf_data_size, 24);
     /* create tiny ttf font 'manrope_bold_md' from C array */
     manrope_bold_md = lv_tiny_ttf_create_data(manrope_bold_ttf_data, manrope_bold_ttf_data_size, 24);
+    /* create tiny ttf font 'crixus_italic_md' from C array */
+    crixus_italic_md = lv_tiny_ttf_create_data(crixus_expanded_italic_ttf_data, crixus_expanded_italic_ttf_data_size, 16);
+    /* create tiny ttf font 'crixus_italic_lg' from C array */
+    crixus_italic_lg = lv_tiny_ttf_create_data(crixus_expanded_italic_ttf_data, crixus_expanded_italic_ttf_data_size, 24);
     /* create tiny ttf font 'crixus_italic_xxl' from C array */
     crixus_italic_xxl = lv_tiny_ttf_create_data(crixus_expanded_italic_ttf_data, crixus_expanded_italic_ttf_data_size, 32);
     /* create tiny ttf font 'crixus_italic_4xl' from C array */
@@ -165,6 +171,8 @@ void ui_init_gen(const char * asset_path)
     /* Register fonts */
     lv_xml_register_font(NULL, "manrope_md", manrope_md);
     lv_xml_register_font(NULL, "manrope_bold_md", manrope_bold_md);
+    lv_xml_register_font(NULL, "crixus_italic_md", crixus_italic_md);
+    lv_xml_register_font(NULL, "crixus_italic_lg", crixus_italic_lg);
     lv_xml_register_font(NULL, "crixus_italic_xxl", crixus_italic_xxl);
     lv_xml_register_font(NULL, "crixus_italic_4xl", crixus_italic_4xl);
 

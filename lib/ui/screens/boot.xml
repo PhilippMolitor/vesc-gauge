@@ -1,5 +1,154 @@
 <screen>
-	<view>
-		<!-- TODO -->
+	<consts>
+		<!-- Durations -->
+		<int name="logo_fadein_duration" value="1500" help="Hero rect fade+slide duration" />
+		<int name="label_duration" value="500" help="Label fade-in duration" />
+		<int name="fadeout_duration" value="1000" help="Fade-out duration for label and spinner" />
+
+		<!-- Delays -->
+		<int name="label_delay" value="3000" help="Delay before label and spinner appear" />
+		<int name="fadeout_delay" value="7000" help="Delay before fade-out starts" />
+		<int name="screen_delay" value="8000" help="Delay before switching to next screen" />
+
+		<!-- Screen transition -->
+		<int name="screen_transition_duration" value="2000" help="Screen fade-in transition duration" />
+	</consts>
+
+	<animations>
+		<timeline name="boot_anim">
+			<!-- translate and fade logo in -->
+			<animation
+				prop="opa"
+				target="logo"
+				start="0"
+				end="255"
+				duration="#logo_fadein_duration"
+				early_apply="true"
+			/>
+			<animation
+				prop="translate_y"
+				target="logo"
+				start="80"
+				end="0"
+				duration="#logo_fadein_duration"
+				early_apply="true"
+			/>
+
+			<!-- fade in booting label and spinner -->
+			<animation
+				prop="opa"
+				target="boot_label"
+				start="0"
+				end="255"
+				duration="#label_duration"
+				delay="#label_delay"
+				early_apply="true"
+			/>
+			<animation
+				prop="opa"
+				target="boot_spinner"
+				start="0"
+				end="255"
+				duration="#label_duration"
+				delay="#label_delay"
+				early_apply="true"
+			/>
+
+			<!-- fade out -->
+			<animation
+				prop="opa"
+				target="logo"
+				start="255"
+				end="0"
+				duration="#fadeout_duration"
+				delay="#fadeout_delay"
+			/>
+			<animation
+				prop="opa"
+				target="boot_label"
+				start="255"
+				end="0"
+				duration="#fadeout_duration"
+				delay="#fadeout_delay"
+			/>
+			<animation
+				prop="opa"
+				target="boot_spinner"
+				start="255"
+				end="0"
+				duration="#fadeout_duration"
+				delay="#fadeout_delay"
+			/>
+		</timeline>
+	</animations>
+
+	<styles>
+		<style name="spinner_main" align="center" radius="0" arc_opa="0" arc_rounded="false" />
+		<style name="spinner_indicator" arc_color="0x0f0" arc_rounded="false" arc_width="2" />
+		<style name="spinner_knob" bg_opa="0" />
+	</styles>
+
+	<view style_bg_color="0x000000" style_bg_opa="255" width="480" height="100%">
+		<lv_obj
+			flex_flow="column"
+			style_flex_main_place="center"
+			style_flex_cross_place="center"
+			style_pad_row="8"
+			style_bg_opa="0"
+			style_border_width="0"
+			width="100%"
+			height="100%"
+		>
+			<lv_obj
+				name="logo"
+				width="80%"
+				height="180"
+				style_bg_color="0xff2222"
+				style_bg_opa="255"
+				style_border_width="0"
+				style_radius="0"
+				align="center"
+			/>
+
+			<lv_obj
+				flex_flow="row"
+				style_flex_cross_place="center"
+				style_flex_main_place="center"
+				style_pad_column="8"
+				style_bg_opa="0"
+				style_border_width="0"
+				width="content"
+				height="content"
+			>
+				<lv_label
+					name="boot_label"
+					text="INITIALIZING..."
+					style_text_color="0xffffff"
+					style_text_font="crixus_italic_lg"
+				/>
+				<lv_spinner
+					name="boot_spinner"
+					width="20"
+					height="20"
+					anim_duration="900"
+					arc_sweep="270"
+					clickable="false"
+				>
+					<style name="spinner_main" selector="main" />
+					<style name="spinner_indicator" selector="indicator" />
+					<style name="spinner_knob" selector="knob" />
+				</lv_spinner>
+			</lv_obj>
+		</lv_obj>
+
+		<!-- animation and next screen transition event -->
+		<play_timeline_event trigger="screen_loaded" timeline="boot_anim" target="self" />
+		<screen_create_event
+			screen="main"
+			trigger="screen_loaded"
+			delay="#screen_delay"
+			anim_type="fade_in"
+			duration="#screen_transition_duration"
+		/>
 	</view>
 </screen>

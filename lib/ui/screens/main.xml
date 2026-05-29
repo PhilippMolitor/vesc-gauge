@@ -1,0 +1,5 @@
+<screen>
+	<view style_bg_color="#bg_main">
+		<gauge-driftline />
+	</view>
+</screen>

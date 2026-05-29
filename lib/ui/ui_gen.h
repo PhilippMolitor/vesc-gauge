@@ -67,6 +67,10 @@ extern lv_font_t * manrope_md;
 
 extern lv_font_t * manrope_bold_md;
 
+extern lv_font_t * crixus_italic_md;
+
+extern lv_font_t * crixus_italic_lg;
+
 extern lv_font_t * crixus_italic_xxl;
 
 extern lv_font_t * crixus_italic_4xl;
@@ -124,6 +128,7 @@ void ui_init_gen(const char * asset_path);
 #include "components/speed_label_gen.h"
 #include "components/speed_unit_label_gen.h"
 #include "screens/boot_gen.h"
+#include "screens/main_gen.h"
 
 #ifdef __cplusplus
 } /*extern "C"*/

@@ -1,9 +1,9 @@
 /**
- * @file boot_gen.h
+ * @file main_gen.h
  */
 
-#ifndef BOOT_H
-#define BOOT_H
+#ifndef MAIN_H
+#define MAIN_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,26 +33,13 @@ extern "C" {
  *      TYPEDEFS
  **********************/
 
-typedef enum {
-    BOOT_TIMELINE_BOOT_ANIM = 0,
-    _BOOT_TIMELINE_CNT = 1
-}boot_timeline_t;
-
 /**********************
  * GLOBAL PROTOTYPES
  **********************/
 
 
 
-lv_obj_t * boot_create(void);
-
-/**
- * Get a timeline of a boot
- * @param obj          pointer to a boot component
- * @param timeline_id  ID of the the timeline
- * @return             pointer to the timeline or NULL if not found
- */
-lv_anim_timeline_t * boot_get_timeline(lv_obj_t * obj, boot_timeline_t timeline_id);
+lv_obj_t * main_create(void);
 
 /**********************
  *      MACROS
@@ -62,4 +49,4 @@ lv_anim_timeline_t * boot_get_timeline(lv_obj_t * obj, boot_timeline_t timeline_
 } /*extern "C"*/
 #endif
 
-#endif /*BOOT_H*/
+#endif /*MAIN_H*/
