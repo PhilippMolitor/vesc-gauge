@@ -44,7 +44,7 @@
 		<tiny_ttf name="manrope_bold_md" size="24" src_path="fonts/manrope-bold.ttf" />
 
 		<!-- big accent font -->
-		<tiny_ttf name="crixus_italic_xxl" size="48" src_path="fonts/crixus-expanded-italic.ttf" />
-		<tiny_ttf name="crixus_italic_3xl" size="148" src_path="fonts/crixus-expanded-italic.ttf" />
+		<tiny_ttf name="crixus_italic_xxl" size="32" src_path="fonts/crixus-expanded-italic.ttf" />
+		<tiny_ttf name="crixus_italic_4xl" size="184" src_path="fonts/crixus-expanded-italic.ttf" />
 	</fonts>
 </globals>

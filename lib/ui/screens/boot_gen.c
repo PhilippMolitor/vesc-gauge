@@ -45,10 +45,6 @@ lv_obj_t * boot_create(void)
     lv_obj_t * lv_obj_0 = lv_obj_create(NULL);
     lv_obj_set_name_static(lv_obj_0, "boot_#");
 
-    lv_obj_t * lv_label_0 = lv_label_create(lv_obj_0);
-    lv_label_set_text(lv_label_0, "45");
-    lv_obj_set_align(lv_label_0, LV_ALIGN_CENTER);
-
     LV_TRACE_OBJ_CREATE("finished");
 
     return lv_obj_0;

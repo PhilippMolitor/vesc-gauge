@@ -61,7 +61,7 @@ extern lv_font_t * manrope_bold_md;
 
 extern lv_font_t * crixus_italic_xxl;
 
-extern lv_font_t * crixus_italic_3xl;
+extern lv_font_t * crixus_italic_4xl;
 
 /*----------------
  * Images

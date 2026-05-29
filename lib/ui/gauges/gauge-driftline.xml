@@ -1,0 +1,55 @@
+<component>
+	<styles>
+		<style name="speed_main" text_color="0xfff" />
+		<style name="speed_label" />
+
+		<style name="stat_arc_main" align="center" width="474" height="474" radius="0" arc_color="0x222" />
+		<style name="stat_arc_indicator" text_color="0x0f0" />
+		<style name="stat_arc_knob" bg_color="0xf00" />
+	</styles>
+
+	<previews>
+		<preview width="480" height="480" style_radius="240" />
+	</previews>
+
+	<view width="100%" height="100%" style_bg_color="0x000">
+		<!-- main speed gauge -->
+		<lv_label style_text_font="crixus_italic_4xl" align="center" text="45" style_pad_left="-38">
+			<style name="speed_main" selector="main" />
+		</lv_label>
+		<lv_label style_text_font="crixus_italic_xxl" align="center" y="110" text="KM/h">
+			<style name="speed_main" selector="main" />
+		</lv_label>
+
+		<!-- left stat: power draw -->
+		<lv_arc
+			start_angle="100"
+			end_angle="260"
+			bg_start_angle="100"
+			bg_end_angle="260"
+			clickable="false"
+			min_value="0"
+			max_value="100"
+			value="30"
+		>
+			<style name="stat_arc_main" selector="main" />
+			<style name="stat_arc_indicator" selector="indicator" />
+			<style name="stat_arc_knob" selector="knob" />
+		</lv_arc>
+
+		<!-- right stat: battery SoC -->
+		<lv_arc
+			bg_start_angle="280"
+			bg_end_angle="80"
+			mode="reverse"
+			clickable="false"
+			min_value="0"
+			max_value="100"
+			value="30"
+		>
+			<style name="stat_arc_main" selector="main" />
+			<style name="stat_arc_indicator" selector="indicator" />
+			<style name="stat_arc_knob" selector="knob" />
+		</lv_arc>
+	</view>
+</component>
