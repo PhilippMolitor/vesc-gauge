@@ -1,5 +1,5 @@
 /**
- * @file boot_gen.c
+ * @file boot_red_gen.c
  * @brief Template source file for LVGL objects
  */
 
@@ -7,12 +7,17 @@
  *      INCLUDES
  *********************/
 
-#include "boot_gen.h"
+#include "boot_red_gen.h"
 #include "../ui.h"
 
 /*********************
  *      DEFINES
  *********************/
+
+/**
+ * Logo background fade duration
+ */
+#define LOGO_BG_FADEIN_DURATION 700
 
 /**
  * Hero rect fade+slide duration
@@ -28,6 +33,11 @@
  * Fade-out duration for label and spinner
  */
 #define FADEOUT_DURATION 1000
+
+/**
+ * Delay before label and spinner appear
+ */
+#define LOGO_DELAY 1000
 
 /**
  * Delay before label and spinner appear
@@ -68,7 +78,7 @@ static void free_timeline_event_cb(lv_event_t * e);
  *   GLOBAL FUNCTIONS
  **********************/
 
-lv_obj_t * boot_create(void)
+lv_obj_t * boot_red_create(void)
 {
     LV_TRACE_OBJ_CREATE("begin");
 
@@ -89,6 +99,7 @@ lv_obj_t * boot_create(void)
         lv_style_set_arc_color(&spinner_indicator, BG_ACCENT);
         lv_style_set_arc_rounded(&spinner_indicator, false);
         lv_style_set_arc_width(&spinner_indicator, 5);
+        lv_style_set_radius(&spinner_indicator, 0);
 
         lv_style_init(&spinner_knob);
         lv_style_set_bg_opa(&spinner_knob, 0);
@@ -97,12 +108,23 @@ lv_obj_t * boot_create(void)
     }
 
     lv_obj_t * lv_obj_0 = lv_obj_create(NULL);
-    lv_obj_set_name_static(lv_obj_0, "boot_#");
+    lv_obj_set_name_static(lv_obj_0, "boot_red_#");
     lv_obj_set_style_bg_color(lv_obj_0, lv_color_hex(0x000000), 0);
     lv_obj_set_style_bg_opa(lv_obj_0, 255, 0);
     lv_obj_set_width(lv_obj_0, 480);
     lv_obj_set_height(lv_obj_0, lv_pct(100));
 
+    lv_obj_t * logo_bg = lv_obj_create(lv_obj_0);
+    lv_obj_set_name(logo_bg, "logo_bg");
+    lv_obj_set_width(logo_bg, lv_pct(100));
+    lv_obj_set_height(logo_bg, 86);
+    lv_obj_set_style_translate_y(logo_bg, -17, 0);
+    lv_obj_set_style_bg_color(logo_bg, BG_ACCENT, 0);
+    lv_obj_set_style_bg_opa(logo_bg, 255, 0);
+    lv_obj_set_style_border_width(logo_bg, 0, 0);
+    lv_obj_set_align(logo_bg, LV_ALIGN_CENTER);
+    lv_obj_set_style_radius(logo_bg, 0, 0);
+    
     lv_obj_t * logo = lv_image_create(lv_obj_0);
     lv_obj_set_name(logo, "logo");
     lv_obj_set_width(logo, lv_pct(100));
@@ -111,7 +133,7 @@ lv_obj_t * boot_create(void)
     lv_obj_set_style_border_width(logo, 0, 0);
     lv_obj_set_style_radius(logo, 0, 0);
     lv_obj_set_align(logo, LV_ALIGN_CENTER);
-    lv_image_set_src(logo, yaiba_logo);
+    lv_image_set_src(logo, yaiba_logo_black);
     
     lv_obj_t * lv_obj_1 = lv_obj_create(lv_obj_0);
     lv_obj_set_flex_flow(lv_obj_1, LV_FLEX_FLOW_ROW);
@@ -123,7 +145,7 @@ lv_obj_t * boot_create(void)
     lv_obj_set_width(lv_obj_1, lv_pct(100));
     lv_obj_set_height(lv_obj_1, LV_SIZE_CONTENT);
     lv_obj_set_align(lv_obj_1, LV_ALIGN_CENTER);
-    lv_obj_set_y(lv_obj_1, 60);
+    lv_obj_set_y(lv_obj_1, 55);
     lv_obj_set_flag(lv_obj_1, LV_OBJ_FLAG_SCROLLABLE, false);
     lv_obj_t * boot_label = lv_label_create(lv_obj_1);
     lv_obj_set_name(boot_label, "boot_label");
@@ -147,22 +169,22 @@ lv_obj_t * boot_create(void)
     lv_obj_add_screen_create_event(lv_obj_0, LV_EVENT_SCREEN_LOADED, main_create, LV_SCREEN_LOAD_ANIM_FADE_IN, SCREEN_TRANSITION_DURATION, SCREEN_DELAY);
     
     /* create animation timeline(s) */
-    lv_anim_timeline_t ** at_array = lv_malloc(sizeof(lv_anim_timeline_t *) * _BOOT_TIMELINE_CNT);
-    at_array[BOOT_TIMELINE_BOOT_ANIM] = timeline_boot_anim_create(lv_obj_0);
+    lv_anim_timeline_t ** at_array = lv_malloc(sizeof(lv_anim_timeline_t *) * _BOOT_RED_TIMELINE_CNT);
+    at_array[BOOT_RED_TIMELINE_BOOT_ANIM] = timeline_boot_anim_create(lv_obj_0);
     lv_obj_set_user_data(lv_obj_0, at_array);
     lv_obj_add_event_cb(lv_obj_0, free_timeline_event_cb, LV_EVENT_DELETE, at_array);
 
-    lv_obj_add_play_timeline_event(lv_obj_0, LV_EVENT_SCREEN_LOADED, boot_get_timeline(lv_obj_0, BOOT_TIMELINE_BOOT_ANIM), 0, false);
+    lv_obj_add_play_timeline_event(lv_obj_0, LV_EVENT_SCREEN_LOADED, boot_red_get_timeline(lv_obj_0, BOOT_RED_TIMELINE_BOOT_ANIM), 0, false);
 
     LV_TRACE_OBJ_CREATE("finished");
 
     return lv_obj_0;
 }
 
-lv_anim_timeline_t * boot_get_timeline(lv_obj_t * obj, boot_timeline_t timeline_id)
+lv_anim_timeline_t * boot_red_get_timeline(lv_obj_t * obj, boot_red_timeline_t timeline_id)
 {
-    if (timeline_id >= _BOOT_TIMELINE_CNT) {
-        LV_LOG_WARN("boot has no timeline with %d ID", timeline_id);
+    if (timeline_id >= _BOOT_RED_TIMELINE_CNT) {
+        LV_LOG_WARN("boot_red has no timeline with %d ID", timeline_id);
         return NULL;
     }
 
@@ -197,22 +219,32 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
+    lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo_bg"));
+    lv_anim_set_values(&a, 0, 255);
+    lv_anim_set_duration(&a, LOGO_BG_FADEIN_DURATION);
+    lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
+    lv_anim_set_early_apply(&a, true);
+    lv_anim_timeline_add(at, 0, &a);
+
+    selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
+    lv_anim_init(&a);
+    lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo"));
     lv_anim_set_values(&a, 0, 255);
     lv_anim_set_duration(&a, LOGO_FADEIN_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
     lv_anim_set_early_apply(&a, true);
-    lv_anim_timeline_add(at, 0, &a);
+    lv_anim_timeline_add(at, LOGO_DELAY, &a);
 
-    selector_and_prop = ((LV_STYLE_TRANSLATE_Y & 0xff) << 24) | 0;
+    selector_and_prop = ((LV_STYLE_TRANSLATE_X & 0xff) << 24) | 0;
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo"));
-    lv_anim_set_values(&a, 40, 0);
+    lv_anim_set_values(&a, 100, 0);
     lv_anim_set_duration(&a, LOGO_FADEIN_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
     lv_anim_set_early_apply(&a, true);
-    lv_anim_timeline_add(at, 0, &a);
+    lv_anim_timeline_add(at, LOGO_DELAY, &a);
 
     selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
     lv_anim_init(&a);
@@ -237,8 +269,26 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
+    lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo_bg"));
+    lv_anim_set_values(&a, 255, 0);
+    lv_anim_set_duration(&a, FADEOUT_DURATION);
+    lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
+    lv_anim_timeline_add(at, FADEOUT_DELAY, &a);
+
+    selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
+    lv_anim_init(&a);
+    lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo"));
     lv_anim_set_values(&a, 255, 0);
+    lv_anim_set_duration(&a, FADEOUT_DURATION);
+    lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
+    lv_anim_timeline_add(at, FADEOUT_DELAY, &a);
+
+    selector_and_prop = ((LV_STYLE_TRANSLATE_X & 0xff) << 24) | 0;
+    lv_anim_init(&a);
+    lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
+    lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo"));
+    lv_anim_set_values(&a, 0, -100);
     lv_anim_set_duration(&a, FADEOUT_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
     lv_anim_timeline_add(at, FADEOUT_DELAY, &a);
@@ -268,7 +318,7 @@ static void free_timeline_event_cb(lv_event_t * e)
 {
     lv_anim_timeline_t ** at_array = lv_event_get_user_data(e);
     uint32_t i;
-    for(i = 0; i < _BOOT_TIMELINE_CNT; i++) {
+    for(i = 0; i < _BOOT_RED_TIMELINE_CNT; i++) {
         lv_anim_timeline_delete(at_array[i]);
     }
     lv_free(at_array);

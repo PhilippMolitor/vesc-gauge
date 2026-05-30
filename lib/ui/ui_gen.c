@@ -62,6 +62,8 @@ lv_font_t * crixus_italic_4xl;
 
 const void * yaiba_logo;
 extern const void * yaiba_logo_data;
+const void * yaiba_logo_black;
+extern const void * yaiba_logo_black_data;
 
 /*----------------
  * Global styles
@@ -127,6 +129,7 @@ void ui_init_gen(const char * asset_path)
      * Images
      *----------------*/
     yaiba_logo = &yaiba_logo_data;
+    yaiba_logo_black = &yaiba_logo_black_data;
 
     /*----------------
      * Global styles
@@ -219,6 +222,7 @@ void ui_init_gen(const char * asset_path)
 #if LV_USE_XML && !defined(LV_EDITOR_PREVIEW)
     /* Register images */
     lv_xml_register_image(NULL, "yaiba_logo", yaiba_logo);
+    lv_xml_register_image(NULL, "yaiba_logo_black", yaiba_logo_black);
 #endif
 
 #if LV_USE_XML == 0

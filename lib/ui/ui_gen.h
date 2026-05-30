@@ -43,6 +43,8 @@ extern "C" {
 
 #define BG_CONTENT lv_color_hex3(0x222)
 
+#define BG_ACCENT lv_color_hex(0xb70202)
+
 /**********************
  *      TYPEDEFS
  **********************/
@@ -80,6 +82,7 @@ extern lv_font_t * crixus_italic_4xl;
  *----------------*/
 
 extern const void * yaiba_logo;
+extern const void * yaiba_logo_black;
 
 /*----------------
  * Subjects
@@ -133,6 +136,7 @@ void ui_init_gen(const char * asset_path);
 #include "components/gauge-atoms/speed_unit_label_gen.h"
 #include "components/gauges/gauge_driftline_gen.h"
 #include "screens/boot_gen.h"
+#include "screens/boot_red_gen.h"
 #include "screens/main_gen.h"
 
 #ifdef __cplusplus

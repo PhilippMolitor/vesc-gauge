@@ -1,11 +1,13 @@
 <screen>
 	<consts>
 		<!-- Durations -->
+		<int name="logo_bg_fadein_duration" value="700" help="Logo background fade duration" />
 		<int name="logo_fadein_duration" value="1500" help="Hero rect fade+slide duration" />
 		<int name="label_duration" value="500" help="Label fade-in duration" />
 		<int name="fadeout_duration" value="1000" help="Fade-out duration for label and spinner" />
 
 		<!-- Delays -->
+		<int name="logo_delay" value="1000" help="Delay before label and spinner appear" />
 		<int name="label_delay" value="3000" help="Delay before label and spinner appear" />
 		<int name="fadeout_delay" value="7000" help="Delay before fade-out starts" />
 		<int name="screen_delay" value="8000" help="Delay before switching to next screen" />
@@ -19,17 +21,27 @@
 			<!-- translate and fade logo in -->
 			<animation
 				prop="opa"
+				target="logo_bg"
+				start="0"
+				end="255"
+				duration="#logo_bg_fadein_duration"
+				early_apply="true"
+			/>
+			<animation
+				prop="opa"
 				target="logo"
 				start="0"
 				end="255"
 				duration="#logo_fadein_duration"
+				delay="#logo_delay"
 				early_apply="true"
 			/>
 			<animation
-				prop="translate_y"
+				prop="translate_x"
 				target="logo"
-				start="40"
+				start="100"
 				end="0"
+				delay="#logo_delay"
 				duration="#logo_fadein_duration"
 				early_apply="true"
 			/>
@@ -55,6 +67,15 @@
 			/>
 
 			<!-- fade out -->
+
+			<animation
+				prop="opa"
+				target="logo_bg"
+				start="255"
+				end="0"
+				duration="#fadeout_duration"
+				delay="#fadeout_delay"
+			/>
 			<animation
 				prop="opa"
 				target="logo"
@@ -63,6 +84,15 @@
 				duration="#fadeout_duration"
 				delay="#fadeout_delay"
 			/>
+			<animation
+				prop="translate_x"
+				target="logo"
+				start="0"
+				end="-100"
+				delay="#fadeout_delay"
+				duration="#fadeout_duration"
+			/>
+
 			<animation
 				prop="opa"
 				target="boot_label"
@@ -84,11 +114,24 @@
 
 	<styles>
 		<style name="spinner_main" align="center" radius="0" arc_opa="0" arc_rounded="false" />
-		<style name="spinner_indicator" arc_color="#bg_accent" arc_rounded="false" arc_width="5" />
+		<style name="spinner_indicator" arc_color="#bg_accent" arc_rounded="false" arc_width="5" radius="0" />
 		<style name="spinner_knob" bg_opa="0" />
 	</styles>
 
 	<view style_bg_color="0x000000" style_bg_opa="255" width="480" height="100%">
+		<lv_obj
+			name="logo_bg"
+			width="100%"
+			height="86"
+			style_translate_y="-17"
+			style_bg_color="#bg_accent"
+			style_bg_opa="255"
+			style_border_width="0"
+			align="center"
+			style_radius="0"
+		>
+			<!-- -->
+		</lv_obj>
 		<lv_image
 			name="logo"
 			width="100%"
@@ -97,7 +140,7 @@
 			style_border_width="0"
 			style_radius="0"
 			align="center"
-			src="yaiba_logo"
+			src="yaiba_logo_black"
 		/>
 
 		<lv_obj
@@ -110,7 +153,7 @@
 			width="100%"
 			height="content"
 			align="center"
-			y="60"
+			y="55"
 			scrollable="false"
 		>
 			<lv_label

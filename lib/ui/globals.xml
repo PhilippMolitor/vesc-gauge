@@ -43,6 +43,8 @@
 		<color name="fg_dimmed" value="0xc9c9c9" />
 		<color name="bg_main" value="0x000" />
 		<color name="bg_content" value="0x222" />
+
+		<color name="bg_accent" value="0xb70202" />
 	</consts>
 
 	<styles>
@@ -50,7 +52,13 @@
 	</styles>
 
 	<images>
-		<data name="yaiba_logo" src_path="images/yaiba-logo.png" file_format="png" color_format="rgb565" />
+		<data name="yaiba_logo" src_path="images/yaiba-logo.png" file_format="png" color_format="rgb565a8" />
+		<data
+			name="yaiba_logo_black"
+			src_path="images/yaiba-logo-black.png"
+			file_format="png"
+			color_format="rgb565a8"
+		/>
 	</images>
 
 	<fonts>
