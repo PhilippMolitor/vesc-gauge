@@ -196,7 +196,7 @@ void setup()
 
   display_init();
   ui_init(NULL);
-  lv_screen_load(boot_create());
+  lv_screen_load(boot_red_create());
 
   lvgl_mutex = xSemaphoreCreateMutex();
 
