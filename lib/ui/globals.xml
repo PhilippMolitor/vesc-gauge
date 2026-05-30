@@ -52,7 +52,7 @@
 	</styles>
 
 	<images>
-		<data name="yaiba_logo" src_path="images/yaiba-logo.png" file_format="png" color_format="rgb565a8" />
+		<data name="yaiba_logo" src_path="images/yaiba-logo.png" file_format="png" color_format="rgb565" />
 		<data
 			name="yaiba_logo_black"
 			src_path="images/yaiba-logo-black.png"
