@@ -223,7 +223,7 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
     lv_anim_timeline_add(at, 0, &a);
 
-    selector_and_prop = ((LV_STYLE_IMAGE_OPA & 0xff) << 24) | 0;
+    selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo"));
@@ -284,15 +284,6 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "boot_label"));
-    lv_anim_set_values(&a, 255, 0);
-    lv_anim_set_duration(&a, FADEOUT_DURATION);
-    lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
-    lv_anim_timeline_add(at, FADEOUT_DELAY, &a);
-
-    selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
-    lv_anim_init(&a);
-    lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
-    lv_anim_set_var(&a, lv_obj_find_by_name(obj, "boot_spinner"));
     lv_anim_set_values(&a, 255, 0);
     lv_anim_set_duration(&a, FADEOUT_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));

@@ -21,7 +21,7 @@
 			<!-- 1. logo fade-in -->
 			<animation prop="bg_opa" target="logo_bg" start="0" end="255" duration="#logo_bg_fadein_duration" />
 			<animation
-				prop="image_opa"
+				prop="opa"
 				target="logo"
 				start="0"
 				end="255"
@@ -79,14 +79,6 @@
 			<animation
 				prop="opa"
 				target="boot_label"
-				start="255"
-				end="0"
-				duration="#fadeout_duration"
-				delay="#fadeout_delay"
-			/>
-			<animation
-				prop="opa"
-				target="boot_spinner"
 				start="255"
 				end="0"
 				duration="#fadeout_duration"
