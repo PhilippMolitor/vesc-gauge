@@ -18,7 +18,7 @@
 
 	<animations>
 		<timeline name="boot_anim">
-			<!-- translate and fade logo in -->
+			<!-- 1. logo fade-in -->
 			<animation
 				prop="opa"
 				target="logo_bg"
@@ -46,7 +46,7 @@
 				early_apply="true"
 			/>
 
-			<!-- fade in booting label and spinner -->
+			<!-- 2. initializing fade-in -->
 			<animation
 				prop="opa"
 				target="boot_label"
@@ -54,6 +54,7 @@
 				end="255"
 				duration="#label_duration"
 				delay="#label_delay"
+				early_apply="true"
 			/>
 			<animation
 				prop="opa"
@@ -62,10 +63,10 @@
 				end="255"
 				duration="#label_duration"
 				delay="#label_delay"
+				early_apply="true"
 			/>
 
-			<!-- fade out -->
-
+			<!-- 3. fade out all -->
 			<animation
 				prop="opa"
 				target="logo_bg"
@@ -177,7 +178,7 @@
 		</lv_obj>
 
 		<!-- animation and next screen transition event -->
-		<play_timeline_event trigger="screen_loaded" timeline="boot_anim" target="self" />
+		<play_timeline_event trigger="screen_load_start" timeline="boot_anim" target="self" />
 		<screen_create_event
 			screen="main"
 			trigger="screen_loaded"

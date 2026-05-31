@@ -17,22 +17,8 @@
 	<animations>
 		<timeline name="boot_anim">
 			<!-- translate and fade logo in -->
-			<animation
-				prop="opa"
-				target="logo"
-				start="0"
-				end="255"
-				duration="#logo_fadein_duration"
-				early_apply="true"
-			/>
-			<animation
-				prop="translate_y"
-				target="logo"
-				start="40"
-				end="0"
-				duration="#logo_fadein_duration"
-				early_apply="true"
-			/>
+			<animation prop="opa" target="logo" start="0" end="255" duration="#logo_fadein_duration" />
+			<animation prop="translate_y" target="logo" start="40" end="0" duration="#logo_fadein_duration" />
 
 			<!-- fade in booting label and spinner -->
 			<animation
@@ -42,6 +28,7 @@
 				end="255"
 				duration="#label_duration"
 				delay="#label_delay"
+				early_apply="true"
 			/>
 			<animation
 				prop="opa"
@@ -50,6 +37,7 @@
 				end="255"
 				duration="#label_duration"
 				delay="#label_delay"
+				early_apply="true"
 			/>
 
 			<!-- fade out -->

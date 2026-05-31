@@ -174,7 +174,7 @@ lv_obj_t * boot_red_create(void)
     lv_obj_set_user_data(lv_obj_0, at_array);
     lv_obj_add_event_cb(lv_obj_0, free_timeline_event_cb, LV_EVENT_DELETE, at_array);
 
-    lv_obj_add_play_timeline_event(lv_obj_0, LV_EVENT_SCREEN_LOADED, boot_red_get_timeline(lv_obj_0, BOOT_RED_TIMELINE_BOOT_ANIM), 0, false);
+    lv_obj_add_play_timeline_event(lv_obj_0, LV_EVENT_SCREEN_LOAD_START, boot_red_get_timeline(lv_obj_0, BOOT_RED_TIMELINE_BOOT_ANIM), 0, false);
 
     LV_TRACE_OBJ_CREATE("finished");
 
@@ -253,6 +253,7 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_set_values(&a, 0, 255);
     lv_anim_set_duration(&a, LABEL_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
+    lv_anim_set_early_apply(&a, true);
     lv_anim_timeline_add(at, LABEL_DELAY, &a);
 
     selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
@@ -262,6 +263,7 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_set_values(&a, 0, 255);
     lv_anim_set_duration(&a, LABEL_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
+    lv_anim_set_early_apply(&a, true);
     lv_anim_timeline_add(at, LABEL_DELAY, &a);
 
     selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
