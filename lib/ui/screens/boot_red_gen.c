@@ -133,6 +133,8 @@ lv_obj_t * boot_red_create(void)
     lv_obj_set_style_radius(logo, 0, 0);
     lv_obj_set_align(logo, LV_ALIGN_CENTER);
     lv_image_set_src(logo, yaiba_logo_black);
+    lv_obj_set_style_translate_x(logo, 100, 0);
+    lv_obj_set_style_image_opa(logo, 0, 0);
     
     lv_obj_t * boot_label = lv_obj_create(lv_obj_0);
     lv_obj_set_name(boot_label, "boot_label");
@@ -147,6 +149,7 @@ lv_obj_t * boot_red_create(void)
     lv_obj_set_align(boot_label, LV_ALIGN_CENTER);
     lv_obj_set_y(boot_label, 55);
     lv_obj_set_flag(boot_label, LV_OBJ_FLAG_SCROLLABLE, false);
+    lv_obj_set_style_opa(boot_label, 0, 0);
     lv_obj_t * boot_label_init = lv_label_create(boot_label);
     lv_obj_set_name(boot_label_init, "boot_label_init");
     lv_label_set_text(boot_label_init, "INITIALIZING...");
@@ -223,14 +226,13 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
     lv_anim_timeline_add(at, 0, &a);
 
-    selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
+    selector_and_prop = ((LV_STYLE_IMAGE_OPA & 0xff) << 24) | 0;
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo"));
     lv_anim_set_values(&a, 0, 255);
     lv_anim_set_duration(&a, LOGO_FADEIN_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
-    lv_anim_set_early_apply(&a, true);
     lv_anim_timeline_add(at, LOGO_DELAY, &a);
 
     selector_and_prop = ((LV_STYLE_TRANSLATE_X & 0xff) << 24) | 0;
@@ -240,7 +242,6 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_set_values(&a, 100, 0);
     lv_anim_set_duration(&a, LOGO_FADEIN_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
-    lv_anim_set_early_apply(&a, true);
     lv_anim_timeline_add(at, LOGO_DELAY, &a);
 
     selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
@@ -250,7 +251,6 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_set_values(&a, 0, 255);
     lv_anim_set_duration(&a, LABEL_DURATION);
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
-    lv_anim_set_early_apply(&a, true);
     lv_anim_timeline_add(at, LABEL_DELAY, &a);
 
     selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
