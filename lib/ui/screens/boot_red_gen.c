@@ -113,6 +113,7 @@ lv_obj_t * boot_red_create(void)
     lv_obj_set_style_bg_opa(lv_obj_0, 255, 0);
     lv_obj_set_width(lv_obj_0, 480);
     lv_obj_set_height(lv_obj_0, lv_pct(100));
+    lv_obj_set_flag(lv_obj_0, LV_OBJ_FLAG_SCROLLABLE, false);
 
     lv_obj_t * logo_bg = lv_obj_create(lv_obj_0);
     lv_obj_set_name(logo_bg, "logo_bg");
@@ -222,7 +223,7 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_set_user_data(&a, (void *)((uintptr_t)selector_and_prop));
     lv_anim_timeline_add(at, 0, &a);
 
-    selector_and_prop = ((LV_STYLE_OPA_LAYERED & 0xff) << 24) | 0;
+    selector_and_prop = ((LV_STYLE_IMAGE_OPA & 0xff) << 24) | 0;
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo"));

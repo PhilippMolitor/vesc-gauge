@@ -21,7 +21,7 @@
 			<!-- 1. logo fade-in -->
 			<animation prop="opa" target="logo_bg" start="0" end="255" duration="#logo_bg_fadein_duration" />
 			<animation
-				prop="opa_layered"
+				prop="image_opa"
 				target="logo"
 				start="0"
 				end="255"
@@ -101,7 +101,7 @@
 		<style name="spinner_knob" bg_opa="0" />
 	</styles>
 
-	<view style_bg_color="0x000000" style_bg_opa="255" width="480" height="100%">
+	<view style_bg_color="0x000000" style_bg_opa="255" width="480" height="100%" scrollable="false">
 		<lv_obj
 			name="logo_bg"
 			width="100%"
