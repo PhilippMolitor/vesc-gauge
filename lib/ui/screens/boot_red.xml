@@ -54,7 +54,6 @@
 				end="255"
 				duration="#label_duration"
 				delay="#label_delay"
-				early_apply="true"
 			/>
 			<animation
 				prop="opa"
@@ -63,7 +62,6 @@
 				end="255"
 				duration="#label_duration"
 				delay="#label_delay"
-				early_apply="true"
 			/>
 
 			<!-- fade out -->
