@@ -21,12 +21,13 @@
 			<!-- 1. logo fade-in -->
 			<animation prop="opa" target="logo_bg" start="0" end="255" duration="#logo_bg_fadein_duration" />
 			<animation
-				prop="opa"
+				prop="opa_layered"
 				target="logo"
 				start="0"
 				end="255"
 				duration="#logo_fadein_duration"
 				delay="#logo_delay"
+				early_apply="true"
 			/>
 			<animation
 				prop="translate_x"
@@ -35,24 +36,18 @@
 				end="0"
 				delay="#logo_delay"
 				duration="#logo_fadein_duration"
+				early_apply="true"
 			/>
 
 			<!-- 2. initializing fade-in -->
 			<animation
-				prop="text_opa"
+				prop="opa"
 				target="boot_label"
 				start="0"
 				end="255"
 				duration="#label_duration"
 				delay="#label_delay"
-			/>
-			<animation
-				prop="opa"
-				target="boot_spinner"
-				start="0"
-				end="255"
-				duration="#label_duration"
-				delay="#label_delay"
+				early_apply="true"
 			/>
 
 			<!-- 3. fade out all -->
@@ -112,9 +107,7 @@
 			width="100%"
 			height="86"
 			style_translate_y="-17"
-			style_translate_x="100"
 			style_bg_color="#bg_accent"
-			style_bg_opa="0"
 			style_border_width="0"
 			align="center"
 			style_radius="0"
@@ -124,7 +117,6 @@
 			name="logo"
 			width="100%"
 			height="120"
-			style_opa="0"
 			style_border_width="0"
 			style_radius="0"
 			align="center"
@@ -132,6 +124,7 @@
 		/>
 
 		<lv_obj
+			name="boot_label"
 			flex_flow="row"
 			style_flex_cross_place="center"
 			style_flex_main_place="center"
@@ -145,19 +138,18 @@
 			scrollable="false"
 		>
 			<lv_label
-				name="boot_label"
+				name="boot_label_init"
 				text="INITIALIZING..."
 				style_text_color="0xffffff"
 				style_text_font="crixus_italic_lg"
 			/>
 			<lv_spinner
-				name="boot_spinner"
+				name="boot_label_spinner"
 				width="20"
 				height="20"
 				anim_duration="900"
 				arc_sweep="270"
 				clickable="false"
-				style_opa="0"
 			>
 				<style name="spinner_main" selector="main" />
 				<style name="spinner_indicator" selector="indicator" />
