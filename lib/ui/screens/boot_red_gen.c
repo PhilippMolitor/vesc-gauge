@@ -214,7 +214,7 @@ static lv_anim_timeline_t * timeline_boot_anim_create(lv_obj_t * obj)
     lv_anim_t a;
     uint32_t selector_and_prop;
 
-    selector_and_prop = ((LV_STYLE_OPA & 0xff) << 24) | 0;
+    selector_and_prop = ((LV_STYLE_BG_OPA & 0xff) << 24) | 0;
     lv_anim_init(&a);
     lv_anim_set_custom_exec_cb(&a, int_anim_exec_cb);
     lv_anim_set_var(&a, lv_obj_find_by_name(obj, "logo_bg"));

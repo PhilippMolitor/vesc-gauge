@@ -19,7 +19,7 @@
 	<animations>
 		<timeline name="boot_anim">
 			<!-- 1. logo fade-in -->
-			<animation prop="opa" target="logo_bg" start="0" end="255" duration="#logo_bg_fadein_duration" />
+			<animation prop="bg_opa" target="logo_bg" start="0" end="255" duration="#logo_bg_fadein_duration" />
 			<animation
 				prop="image_opa"
 				target="logo"
